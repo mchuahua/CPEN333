@@ -1,0 +1,9 @@
+**/.vscode
+*.tmp
+~*
+*.sln
+**/debug
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+**/.vs
