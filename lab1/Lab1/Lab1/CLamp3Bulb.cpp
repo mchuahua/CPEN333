@@ -28,6 +28,19 @@ CLamp3Bulb::~CLamp3Bulb(){
 	std::cout << "CLamp3Bulb destructor being called.." << std::endl;
 }
 
+// Copy constructor 
+CLamp3Bulb::CLamp3Bulb(const CLamp3Bulb &copy){
+    bulb_arr[0] = new CBulb;
+    bulb_arr[1] = new CBulb;
+    bulb_arr[2] = new CBulb;
+    my_switch   = new CSwitch;
+
+    *bulb_arr[0] = *copy.bulb_arr[0];
+    *bulb_arr[1] = *copy.bulb_arr[2];
+    *bulb_arr[2] = *copy.bulb_arr[3];
+    *my_switch = *copy.my_switch;
+}
+
 //Turn switch and all three bulbs on
 void CLamp3Bulb::LampOn(){
     // Turn switch on
@@ -103,11 +116,20 @@ CBulb* CLamp3Bulb::exchange(CBulb* newBulb, int bulbNum){
         std::cout << "ERROR, bulb number is not in range!" << std::endl;
         return NULL;
     }
-    
+    bool lamp_was_on = false;
+    //Turn off lamp + bulbs first before exchanging if lamp is on
+    if (my_switch->getState() == 1){
+        LampOff();
+        lamp_was_on = true;
+    }
     //Temporary old bulb to return
     CBulb* oldBulb = bulb_arr[bulbNum];
 
     bulb_arr[bulbNum] = newBulb;
+
+    //Turn lamp + bulbs back on if it was on previously
+    if (lamp_was_on)
+        LampOn();
 
     return oldBulb;
 }
