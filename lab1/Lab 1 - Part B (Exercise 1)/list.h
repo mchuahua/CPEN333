@@ -27,8 +27,8 @@ class list
 public:
     List();
     ~List();
-    insert(int val);
-    delete(int node);
+    void insert(int val);
+    void Delete(int node);
     int get(int i);
 private:
     Node *ptr; // pointer to 1st node in list
