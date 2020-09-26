@@ -32,8 +32,13 @@ void list::insert(int val){
 
 void list::Delete(){
     Node* temp_ptr = ptr;
-    while (temp_ptr->next != NULL)
+    Node* prev_ptr;
+    while (temp_ptr->next != NULL){
+        prev_ptr = temp_ptr;
         temp_ptr = temp_ptr->next;
+        if (temp_ptr->next == NULL)
+            prev_ptr->next == NULL;
+    }
     delete temp_ptr;
 }
 
