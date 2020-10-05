@@ -10,12 +10,19 @@ enum {
 	CMS_VENTI
 };
 
-class CoffeeMaker : ActiveClass
+class CoffeeMaker : public ActiveClass
 {
 public:
-	CoffeeMaker();
+	CoffeeMaker(int num);
 	~CoffeeMaker();
 private:
-	void main();
+	int main();
+	void idle();
+	void tall();
+	void grande();
+	void venti();
+
+	int CM_number;
+	int state = CMS_IDLE;
 };
 

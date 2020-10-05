@@ -10,12 +10,16 @@ enum {
 	WMS_SPINNING
 };
 
-class WashingMashine : ActiveClass
+class WashingMachine : public ActiveClass
 {
 public:
-	WashingMashine();
-	~WashingMashine();
+	WashingMachine(int num);
+	~WashingMachine();
 private:
-	void main();
+	int main();
+	void idle();
+
+	int WM_number;
+	int state = WMS_IDLE;
 };
 
