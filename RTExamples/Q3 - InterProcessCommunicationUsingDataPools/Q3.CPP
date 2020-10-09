@@ -58,7 +58,7 @@ int 	main()
 
 	getchar() ;
 
-	CProcess p1("C:\\RTExamples\\Q3 - InterProcessCommunicationUsingDataPools\\q4\\debug\\q4.exe",	// pathlist to child program executable
+	CProcess p1("C:\\Users\\MartinChua\\Desktop\\CPEN333\\RTExamples\\Q3 - InterProcessCommunicationUsingDataPools\\q4\\debug\\Q4.exe",	// pathlist to child program executable
 		NORMAL_PRIORITY_CLASS,			// priority
 		OWN_WINDOW,						// process has its own window
 		ACTIVE							// process is active immediately
