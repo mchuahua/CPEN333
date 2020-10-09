@@ -16,6 +16,8 @@ class WashingMachine : public ActiveClass
 public:
 	WashingMachine(int num);
 	~WashingMachine();
+	void Start();
+	void Stop();
 private:
 	int main();
 	void idle();
@@ -25,7 +27,8 @@ private:
 	void spinning();
 
 	int WM_number;
-	bool cycle = true;
+	bool start = true;
+	bool stop_flag = false;
 	int state = WMS_IDLE;
 };
 
