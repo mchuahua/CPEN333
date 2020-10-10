@@ -11,6 +11,7 @@
 #include <string>
 #include <conio.h>
 #include <iostream>
+#include <vector>
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")

@@ -8,8 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
-#include <conio.h>
-#include <iostream>
+#include <vector>
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -103,6 +102,41 @@ int __cdecl main(int argc, char **argv)
 	
 	printf("Bytes Sent: %ld\n", iResult);
 	printf("Sent: %s\n", sendbuf);
+	Sleep(200);
+	// Send 421 
+	iResult = send(ConnectSocket, sendnums, (int)strlen(sendnums), 0);
+	if (iResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ConnectSocket);
+		WSACleanup();
+		return 1;
+	}
+
+	printf("Bytes Sent: %ld\n", iResult);
+	printf("Sent: %s\n", sendnums);
+	Sleep(200);
+	// Send 58008 
+	iResult = send(ConnectSocket, sendnums2, (int)strlen(sendnums2), 0);
+	if (iResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ConnectSocket);
+		WSACleanup();
+		return 1;
+	}
+	printf("Bytes Sent: %ld\n", iResult);
+	printf("Sent: %s\n", sendnums2);
+
+	// Send 58008 
+	iResult = send(ConnectSocket, sendnums2, (int)strlen(sendnums2), 0);
+	if (iResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		closesocket(ConnectSocket);
+		WSACleanup();
+		return 1;
+	}
+	printf("Bytes Sent: %ld\n", iResult);
+	printf("Sent: %s\n", sendnums2);
+
 
 	// shutdown the connection since no more data will be sent
 	iResult = shutdown(ConnectSocket, SD_SEND);
