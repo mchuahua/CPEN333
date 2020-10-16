@@ -51,11 +51,13 @@ TheDataPointer2 = (struct mydatapooldata2 *)(dp2.LinkDataPool()); // get pointer
 	cout << "Single producer, double consumer" << endl;
 	for(int i = 0; i < 10; i ++)	 {	// Produce 10 lots of data
 		cs1.Wait() ;			// wait for consumer process to signal consumer semaphore
+		cs2.Wait();
 //		cout << "Hit RETURN to Produce Data.....\n";
 //		getchar() ;
 		TheDataPointer->x = i ;	// generate data and store in datapool
 		cout << "Produced " << i << ".....\n";
 		ps1.Signal() ;			// signal the producer semaphore to wake up the consumer
+		ps2.Signal();
 		
 	}
 	

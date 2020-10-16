@@ -33,8 +33,7 @@ int main()
 
 	cout << "Consumer Process Running (part 2 of 5d).....\n";
 	while(1){
-		cout << "Hit RETURN to Consume Data from both producers.....\n";
-		getchar();
+		Sleep(500);
 		if (TheDataPointer->done == true)
 			break;
 
@@ -50,6 +49,5 @@ int main()
 		}
 	}
 
-	getchar();
 	return 0;
 }
