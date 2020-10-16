@@ -1,4 +1,5 @@
 //child
+//taken from docs.microsoft.com
 #undef UNICODE
 
 #define WIN32_LEAN_AND_MEAN

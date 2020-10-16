@@ -30,7 +30,7 @@ int __cdecl main(int argc, char **argv)
 	const char *sendbuf = "can u see this"; //sends, server pritns out, then sends back "yes can see"
 	const char *sendnums = "421           "; //sends, sever prints out subtracting 421 - 1, sends back "420"
 	const char *sendnums2 = "58008         "; //sends, sever prints out 58008, sends back 5138008.
-
+	const char *sendbuf2 = "how are u doing";
 	char recvbuf[DEFAULT_BUFLEN];
 	int iResult;
 	int recvbuflen = DEFAULT_BUFLEN;
@@ -102,19 +102,19 @@ int __cdecl main(int argc, char **argv)
 	
 	printf("Bytes Sent: %ld\n", iResult);
 	printf("Sent: %s\n", sendbuf);
-	Sleep(200);
+	Sleep(2000);
 	// Send 421 
-	iResult = send(ConnectSocket, sendnums, (int)strlen(sendnums), 0);
-	if (iResult == SOCKET_ERROR) {
-		printf("send failed with error: %d\n", WSAGetLastError());
-		closesocket(ConnectSocket);
-		WSACleanup();
-		return 1;
-	}
+	//iResult = send(ConnectSocket, sendnums, (int)strlen(sendnums), 0);
+	//if (iResult == SOCKET_ERROR) {
+	//	printf("send failed with error: %d\n", WSAGetLastError());
+	//	closesocket(ConnectSocket);
+	//	WSACleanup();
+	//	return 1;
+	//}
 
-	printf("Bytes Sent: %ld\n", iResult);
-	printf("Sent: %s\n", sendnums);
-	Sleep(200);
+	//printf("Bytes Sent: %ld\n", iResult);
+//	printf("Sent: %s\n", sendnums);
+	//Sleep(2000);
 	// Send 58008 
 	iResult = send(ConnectSocket, sendnums2, (int)strlen(sendnums2), 0);
 	if (iResult == SOCKET_ERROR) {
@@ -126,8 +126,9 @@ int __cdecl main(int argc, char **argv)
 	printf("Bytes Sent: %ld\n", iResult);
 	printf("Sent: %s\n", sendnums2);
 
+	Sleep(2000);
 	// Send 58008 
-	iResult = send(ConnectSocket, sendnums2, (int)strlen(sendnums2), 0);
+	iResult = send(ConnectSocket, sendbuf2, (int)strlen(sendbuf2), 0);
 	if (iResult == SOCKET_ERROR) {
 		printf("send failed with error: %d\n", WSAGetLastError());
 		closesocket(ConnectSocket);
@@ -135,7 +136,8 @@ int __cdecl main(int argc, char **argv)
 		return 1;
 	}
 	printf("Bytes Sent: %ld\n", iResult);
-	printf("Sent: %s\n", sendnums2);
+	printf("Sent: %s\n", sendbuf2);
+
 
 
 	// shutdown the connection since no more data will be sent
@@ -152,14 +154,18 @@ int __cdecl main(int argc, char **argv)
 
 		iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
 		if (iResult > 0) {
-			printf("Bytes received: %d\n", iResult);
-			printf("Received: %s", recvbuf);
+			printf("Received: %s\n", recvbuf);
+			//for (int i = 0; i < recvbuflen; ++i) {
+				//printf("%c", recvbuf[i]);
+				//if (recvbuf[i] == '\0')
+					//printf("\n");
+			//}
+			//printf("\n");
 		}
 		else if (iResult == 0)
 			printf("Connection closed\n");
 		else
 			printf("recv failed with error: %d\n", WSAGetLastError());
-
 	} while (iResult > 0);
 
 	
