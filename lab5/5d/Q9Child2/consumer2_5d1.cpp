@@ -9,24 +9,19 @@ struct		mydatapooldata {			// template for data in a datapool
 	int x;						// just a single int
 	bool done = false;
 };
-
 struct		mydatapooldata2 {		// template for the data in a datapool
 	int 	x;						// just a single int
 };
-struct		mydatapooldata3 {		// template for the data in a datapool
-	int 	x;						// just a single int
 
-};
 struct		mydatapooldata 	*TheDataPointer;		// pointer to the actual data pool
 struct		mydatapooldata2	*TheDataPointer2;		// pointer to the actual data pool
-struct		mydatapooldata3	*TheDataPointer3;		// pointer to the actual data pool
 
 int main()
 {
 	CSemaphore		ps1("PS1", 0, 1);    // semaphore with initial value 0 and max value 1
 	CSemaphore		cs1("CS1", 1, 1);    // semaphore with initial value 1 and max value 1
 	CSemaphore		cs2("CS2", 1, 1);    // semaphore with initial value 1 and max value 1
-
+	CSemaphore		ps2("PS1", 0, 1);    // semaphore with initial value 1 and max value 1
 										 //	Create a datapool and then get a pointer to it
 
 	CDataPool dp1("MyDataPoolName", sizeof(struct mydatapooldata));
@@ -38,6 +33,7 @@ int main()
 		getchar();
 		if (TheDataPointer->done == true)
 			break;
+
 		ps1.Wait();		// wait for producer process to signal producer semaphore
 		cout << "Consumed: " << TheDataPointer->x << '\n';
 		i = TheDataPointer->x;
