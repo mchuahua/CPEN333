@@ -36,6 +36,8 @@ int main()
 	for (int i = 1; i < 10 && TheDataPointer->done != true;) {	// consume 10 lots of data
 		cout << "Hit RETURN to Consume Data.....\n";
 		getchar();
+		if (TheDataPointer->done == true)
+			break;
 		ps1.Wait();		// wait for producer process to signal producer semaphore
 		cout << "Consumed: " << TheDataPointer->x << '\n';
 		i = TheDataPointer->x;
