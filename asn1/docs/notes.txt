@@ -1,0 +1,102 @@
+10 story Elevator System
+
+A:
+- 2 Elevators:
+    - Inside: 
+        - 2 char:
+            - 1/2 (elevator 1/2)
+            - 0-9 (floor dest)
+    - Outside:
+        - 2 char:
+            - u/d (up/down)
+            - 0-9 (floor src)
+    - Faults:
+        - +/- (resume, stop)
+            - Clear requests when stop
+        - 1/2 (elevator 1/2)
+- Display console:
+    - Elevator animation inside building (10 floors)
+        - up down status
+        - open/close door animation
+        - fault 
+        - Floor number status
+        - Status box/elevator:
+            - Current Floor
+            - Status (up/down/waiting, OOS)
+            - Dest
+
+fault (red)
+________
+|  \/  |
+|  /\  |
+--------
+
+closed
+________
+|  ||  |
+|  ||  |
+--------
+
+open
+________
+||    ||
+||    ||
+--------       
+              o
+              |             (.)
+     ___________________    || 
+    /                   \  _||___
+    <                   > ( oo )
+    <                   >_| ^^ |_
+    <                   >   @    \
+   /~                   ~\ . . _ |
+  /~~                   ~~\    | |
+ /~~~                   ~~~\/ _| |
+ |                        ]/ / [m]
+ |[                       ]m]
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       ]|
+ |[                       -|
+ |[                        |
+ ---------------------------
+    ________  ║ ________
+    ||    ||  ║ ||    ||
+    ||    ||  ║ ||    ||
+    --------  ║ --------  
+
+
+- Termination:
+    - ee (both elevators goto gnd, open, stop)
+
+TODO: 
+Make skelton
+regex / input validation 
+bells/whisltes
+    - colour, clever dispatch algo, more than 2 elevators
+
+
+B: 
+- 2 char:
+    - d+ (start passenger dynamic)
+    - d- (end passenger dynamic)
+- Dynamic passenger:
+    - Random src, dest (up/down calculated from src/dest)
+    - 
+
+Passenger
+  (P) 
+ .-|-,
+  / \
