@@ -10,6 +10,15 @@ struct io_dispatcher_pipeline {
 	char second;
 };
 
+struct data {
+	int dest_floor;
+	int curr_floor
+	bool openclosed;
+};
+
+struct data *elevator1status;
+struct data *elevator2status;
+
 
 void e1();
 void e2();
@@ -47,9 +56,14 @@ int main(void) {
 void e1(){
 	CSemaphore completion("done", 0, 1);
 	elevator e1("hehe xd");
+	CSemaphore		ps2("PS2", 0, 1);    // semaphore with initial value 0 and max value 1
+	CSemaphore		cs2("CS2", 1, 1);    // semaphore with initial value 1 and max value 1
+
+	CDataPool dp1("elevator1", sizeof(struct data));
+	elevator1status = (struct data*)(dp1.LinkDataPool()); // get pointer to data pool
 
 	while(completion.Read() != 1){
-		
+		// elevator1status->asdf = 
 	}
 
 }
@@ -58,8 +72,14 @@ void e1(){
 void e2(){
 	CSemaphore completion("done", 0, 1);
 	elevator e2("hehe xd");
-	while(completion.Read() != 1){
+	CSemaphore		ps4("PS4", 0, 1);    // semaphore with initial value 0 and max value 1
+	CSemaphore		cs4("CS4", 1, 1);    // semaphore with initial value 1 and max value 1
 
+	CDataPool dp1("elevator2", sizeof(struct data));
+	elevator2status = (struct data*)(dp1.LinkDataPool()); // get pointer to data pool
+
+	while(completion.Read() != 1){
+		// elevator2status->asdf = 
 	}
 
 }
