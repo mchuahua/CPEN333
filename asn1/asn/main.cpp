@@ -1,5 +1,6 @@
 // main.cpp: defines the entry point for the console application
 #include "rt.h"
+#include "elevator.h"
 #include <thread>
 #include <iostream>
 using namespace std;
@@ -45,19 +46,22 @@ int main(void) {
 // Responds to changes in elevator1 status, and copies this status to local variables so that when a new command arrives, it can be dealt with immediately
 void e1(){
 	CSemaphore completion("done", 0, 1);
+	elevator e1("hehe xd");
 
 	while(completion.Read() != 1){
 		
 	}
+
 }
 
 // Responds to changes in elevator2 status, and copies this status to local variables so that when a new command arrives, it can be dealt with immediately 
 void e2(){
 	CSemaphore completion("done", 0, 1);
-
+	elevator e2("hehe xd");
 	while(completion.Read() != 1){
 
 	}
+
 }
 
 // Checks pipeline for stuff. Triggers completion or

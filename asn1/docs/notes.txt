@@ -87,6 +87,9 @@ regex / input validation
 bells/whisltes
     - colour, clever dispatch algo, more than 2 elevators
 
+is mutex needed for io, if we use named monitor to write to console?
+double check monitors are implemented correctly ( i dont htink it is)
+add producer/consumer synchroinzation.
 
 B: 
 - 2 char:

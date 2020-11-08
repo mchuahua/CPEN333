@@ -1,4 +1,5 @@
 #include "../rt.h"
+#include "../elevator.h"
 #include <iostream>
 #include <thread>
 using namespace std;
@@ -32,12 +33,15 @@ int main()
 // Attempts to get status of elevator. may be blocked if no new data
 void e1(){
 	CSemaphore completion("done", 0, 1);
+	elevator e1("hehe xd");
 
 	CMutex console("console");
 
 	while(completion.Read() != 1){
 		
 	}	
+
+
 }
 
 // Handles updates from elevator 2 + redraws screen using move_cursor + mutex
@@ -45,10 +49,12 @@ void e1(){
 void e2(){
 	CSemaphore completion("done", 0, 1);
 	CMutex console("console");
+	elevator e2("hehe xd");
 
 	while(completion.Read() != 1){
-		
+		// get mutex, use e2.WriteToConsole();
 	}
+
 }
 
 // Handles input using getch() or getche() ?
