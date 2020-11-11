@@ -2,27 +2,38 @@
 #include "../rt.h"
 #include <string>
 
-struct data {
-	int dest_floor;
-	int curr_floor;
-	bool openclosed;
+#define ELEVATOR1 1
+#define ELEVATOR2 2
+struct thedata {
+	int dest_floor = 0;
+	int curr_floor = 0;
+	bool closed = true;
+	bool idle = true;
 };
 
-struct data *elevator1status;
-struct data *elevator2status;
+// struct thedata *elevator1status;
+// struct thedata *elevator2status;
 // No need for active class 
 class elevator //: public ActiveClass
 {
 public:
 	elevator(string name);
 	~elevator();
-	// int __thiscall Child1(void *args);
+	//void GetElevator2Status();
+	void GetElevatorStatus();
+	void set_dest(int floor);
+	//void update_status();
 
 private:
 	void WriteToScreen(int x, int y, string input);
-	//UINT __stdcall Child(void *args);
-	// int main();
-	CMutex *theMutex;
-	void GetElevatorStatus();
-};
 
+	CMutex *theMutex;
+	CDataPool *datapool;
+	struct thedata* datapool_ptr;
+
+	CSemaphore *ps1;
+	CSemaphore *ps2;
+	CSemaphore *cs1;
+	CSemaphore *cs2;
+
+};

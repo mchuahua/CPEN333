@@ -12,11 +12,11 @@ int main()
 
 	elevator e2("not hehe xd");
 
-	while(completion.Read() != 1){
-		command.Wait();
-		// Read from mailbox (? wtf is this?)
-		// updates named monitor elevator2
-	}
+	// while(completion.Read() != 1){
+	// 	command.Wait();
+	// 	// Read from mailbox (? wtf is this?)
+	// 	// updates named monitor elevator2
+	// }
 
 	return 0;
 }

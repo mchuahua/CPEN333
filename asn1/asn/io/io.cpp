@@ -25,12 +25,12 @@ int main()
 
 	// Creating three threads: updates from elevator1 / 2 + screen redraw, input of commands
 	thread t1(e1);
-	thread t2(e2);
+	// thread t2(e2);
 	thread t3(input);
 
 	// Wait for threads to finish.
 	t1.join();
-	t2.join();
+	// t2.join();
 	t3.join();
 	return 0;
 }

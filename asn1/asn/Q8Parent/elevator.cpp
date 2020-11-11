@@ -2,60 +2,120 @@
 
 elevator::elevator(string name)
 {
+	// Mutex
 	theMutex = new CMutex(string("__Mutex") + name);
+	
+	// Datapool
+    datapool = new CDataPool(string("__Data") + name, sizeof(struct thedata));
+	datapool_ptr = (struct thedata*)(datapool->LinkDataPool()); // get pointer to data pool
+
+	// insert stuff here syncrhoinzation
+    ps1 = new CSemaphore(string("PS1") + name, 0, 1);    // semaphore with initial value 0 and max value 1
+    ps2 = new CSemaphore(string("PS2") + name, 0, 1);    // semaphore with initial value 0 and max value 1
+    cs1 = new CSemaphore(string("CS1") + name, 1, 1);    // semaphore with initial value 1 and max value 1
+    cs2 = new CSemaphore(string("CS2") + name, 1, 1);    // semaphore with initial value 1 and max value 1
+
 }
 
 elevator::~elevator()
 {
 	delete theMutex;
+	delete datapool;
 }
+
+void elevator::set_dest(int floor){
+	theMutex->Wait();
+	datapool_ptr->dest_floor = floor;
+	theMutex->Signal();
+}
+// void elevator::update_status(){
+// 	GetElevatorStatus();
+// }
 
 void elevator::GetElevatorStatus(){
 
-    // insert stuff here syncrhoinzation
-    CSemaphore		ps1("PS1", 0, 1);    // semaphore with initial value 0 and max value 1
-	CSemaphore		cs1("CS1", 1, 1);    // semaphore with initial value 1 and max value 1
-	CSemaphore		cs2("CS2", 1, 1);    // semaphore with initial value 1 and max value 1
-	CSemaphore		ps2("PS2", 0, 1);    // semaphore with initial value 0 and max value 1
-    CSemaphore		ps3("PS3", 0, 1);    // semaphore with initial value 0 and max value 1
-	CSemaphore		cs3("CS3", 1, 1);    // semaphore with initial value 1 and max value 1
-	CSemaphore		cs4("CS4", 1, 1);    // semaphore with initial value 1 and max value 1
-	CSemaphore		ps4("PS4", 0, 1);    // semaphore with initial value 0 and max value 1
     CSemaphore      completed("done", 0, 1);
 
-    CDataPool dp1("elevator1", sizeof(struct data));
-	elevator1status = (struct data*)(dp1.LinkDataPool()); // get pointer to data pool
-
-    CDataPool dp2("elevator2", sizeof(struct data));
-	elevator2status = (struct data*)(dp2.LinkDataPool()); // get pointer to data pool
 
 	while(completed.Read() != 1){
-		Sleep(500);
+		// Amount of time to sleep in between floors (to simulate floor travelling)
+		Sleep(1000); 
+		if (completed.Read() != 1){
+				return;
+		}
+		// Elevator is the producer, we produce the floors. IO and dispatcher reads the current value
+		if (ps1->Read() > 0 && ps2->Read() > 0) {
+			cs1->Wait();		// wait for consumer processes to signal producer semaphore
+			if (completed.Read() != 1){
+				return;
+			}
+			cs2->Wait();
+			if (completed.Read() != 1){
+				return;
+			}
+			// Read elevator status, and go up or down depending on what it sees.
+			theMutex->Wait();
 
-		if (ps1.Read() > 0) {
-			ps1.Wait();		// wait for producer process to signal producer semaphore
+			if (datapool_ptr->dest_floor == datapool_ptr->curr_floor && datapool_ptr->idle == false){
+				if (datapool_ptr->closed){
+					datapool_ptr->closed = false;
+				}
+				else
+				{
+					datapool_ptr->closed = true;
+					datapool_ptr->idle = true;
+					return;
+				}
+			}
+			else if (datapool_ptr->dest_floor < datapool_ptr->curr_floor){
+				(datapool_ptr->curr_floor)--;
+				datapool_ptr->idle = false;
+			}
+			else if (datapool_ptr->dest_floor > datapool_ptr->curr_floor){
+				(datapool_ptr->curr_floor)++;
+				datapool_ptr->idle = false;
+			}
+			theMutex->Signal();	
+			
                 // Do stuff with io for elevator 1
-			cs1.Signal();		// signal the consumer semaphore to wake up the producer
-		}
-		if (ps2.Read() > 0) {
-			ps2.Wait();		// wait for producer process to signal producer semaphore
-                // Do stuff with dispatcher for elevator 1
-			cs2.Signal();		// signal the consumer semaphore to wake up the producer
-		}
-        if (ps3.Read() > 0) {
-			ps3.Wait();		// wait for producer process to signal producer semaphore
-                // Do stuff with io for leevator 2
-			cs3.Signal();		// signal the consumer semaphore to wake up the producer
-		}
-		if (ps4.Read() > 0) {
-			ps4.Wait();		// wait for producer process to signal producer semaphore
-                // Do stuff with dispatcher for elevator 2
-			cs4.Signal();		// signal the consumer semaphore to wake up the producer
+				// Make sure IO has read the last update
+				// Write new data to pool
+			ps1->Signal();		// signal the consumer semaphore to wake up the producer
+			ps2->Signal();
 		}
 	}
 }
 
+// void elevator::GetElevator2Status(){
 
+//     // insert stuff here syncrhoinzation
+//     CSemaphore		ps3("PS3", 0, 1);    // semaphore with initial value 0 and max value 1
+// 	CSemaphore		cs3("CS3", 1, 1);    // semaphore with initial value 1 and max value 1
+// 	CSemaphore		cs4("CS4", 1, 1);    // semaphore with initial value 1 and max value 1
+// 	CSemaphore		ps4("PS4", 0, 1);    // semaphore with initial value 0 and max value 1
+//     CSemaphore      completed("done", 0, 1);
+
+// 	// // Elevator 2 datapool
+//     // CDataPool dp2("elevator2", sizeof(struct data));
+// 	// elevator2status = (struct data*)(dp2.LinkDataPool()); // get pointer to data pool
+
+// 	// while(completed.Read() != 1){
+// 	// 	Sleep(500);
+
+//     //     if (ps3.Read() > 0) {
+// 	// 		ps3.Wait();		// wait for producer process to signal producer semaphore
+//     //             // Do stuff with io for leevator 2
+// 	// 		cs3.Signal();		// signal the consumer semaphore to wake up the producer
+// 	// 	}
+// 	// 	if (ps4.Read() > 0) {
+// 	// 		ps4.Wait();		// wait for producer process to signal producer semaphore
+//     //             // Do stuff with dispatcher for elevator 2
+// 	// 		cs4.Signal();		// signal the consumer semaphore to wake up the producer
+// 	// 	}
+// 	// }
+// }
+
+// Not even needed
 void elevator::WriteToScreen(int x, int y, string input) {
 	theMutex->Wait();
 	MOVE_CURSOR(x, y);             	// move cursor to cords [x,y] 

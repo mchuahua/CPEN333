@@ -10,16 +10,6 @@ struct io_dispatcher_pipeline {
 	char second;
 };
 
-// struct data {
-// 	int dest_floor;
-// 	int curr_floor;
-// 	bool openclosed;
-// };
-
-// data *elevator1status;
-// data *elevator2status;	
-
-
 void e1();
 void e2();
 void algo();
@@ -29,22 +19,22 @@ int main(void) {
 	
 	// Create 3 processes
 	CProcess elevator1_process("elevator1.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
-	CProcess elevator2_process("elevator2.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
+	//CProcess elevator2_process("elevator2.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
 	CProcess io_process("io.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
 	
 	// Create 3 threads
 	thread t1(e1); 
-	thread t2(e2);
+	//thread t2(e2);
 	thread t3(algo);
 
 	// Wait for threads to finish
 	t1.join();
-	t2.join();
+	//t2.join();
 	t3.join();
 	
 	// Waiting for processes to terminate
 	elevator1_process.WaitForProcess();
-	elevator1_process.WaitForProcess();
+	//elevator1_process.WaitForProcess();
 	io_process.WaitForProcess();
 
 	// Prevent auto exit
