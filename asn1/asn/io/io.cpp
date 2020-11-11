@@ -65,6 +65,7 @@ void input(){
 	// Forever loop
 	while(1){
 		// Get characters
+		// TODO: add mutex
 		cout << "Enter characters: " <<endl;
 		string s;
 		getline(cin, s);
