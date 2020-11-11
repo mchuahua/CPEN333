@@ -1,4 +1,5 @@
 #include "../rt.h"
+#include "../elevator.h"
 #include <iostream>
 
 using namespace std;
@@ -8,6 +9,8 @@ int main()
 	cout << "Hello from elevator2 process !!!!!!" << endl;
 	CSemaphore completion("done", 0, 1);
 	CSemaphore command("e2", 0, 1);
+
+	elevator e2("not hehe xd");
 
 	while(completion.Read() != 1){
 		command.Wait();

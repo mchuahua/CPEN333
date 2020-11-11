@@ -9,6 +9,12 @@ struct io_dispatcher_pipeline {
 	char second;
 };
 
+struct data {
+	int dest_floor;
+	int curr_floor
+	bool openclosed;
+};
+
 void e1();
 void e2();
 void input();
@@ -33,12 +39,13 @@ int main()
 // Attempts to get status of elevator. may be blocked if no new data
 void e1(){
 	CSemaphore completion("done", 0, 1);
-	elevator e1("hehe xd");
+	
 	CSemaphore		ps1("PS1", 0, 1);    // semaphore with initial value 0 and max value 1
 	CSemaphore		cs1("CS1", 1, 1);    // semaphore with initial value 1 and max value 1
 
 	// CMutex console("console");    
 	CMutex console("console");
+
 
 	while(completion.Read() != 1){
 		

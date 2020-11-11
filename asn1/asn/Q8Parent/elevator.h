@@ -4,7 +4,7 @@
 
 struct data {
 	int dest_floor;
-	int curr_floor
+	int curr_floor;
 	bool openclosed;
 };
 
@@ -21,6 +21,7 @@ public:
 private:
 	void WriteToScreen(int x, int y, string input);
 	//UINT __stdcall Child(void *args);
+	// int main();
 	CMutex *theMutex;
 	void GetElevatorStatus();
 };

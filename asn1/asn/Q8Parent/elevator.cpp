@@ -5,7 +5,6 @@ elevator::elevator(string name)
 	theMutex = new CMutex(string("__Mutex") + name);
 }
 
-
 elevator::~elevator()
 {
 	delete theMutex;
@@ -21,7 +20,7 @@ void elevator::GetElevatorStatus(){
     CSemaphore		ps3("PS3", 0, 1);    // semaphore with initial value 0 and max value 1
 	CSemaphore		cs3("CS3", 1, 1);    // semaphore with initial value 1 and max value 1
 	CSemaphore		cs4("CS4", 1, 1);    // semaphore with initial value 1 and max value 1
-	CSemaphore		ps5("PS4", 0, 1);    // semaphore with initial value 0 and max value 1
+	CSemaphore		ps4("PS4", 0, 1);    // semaphore with initial value 0 and max value 1
     CSemaphore      completed("done", 0, 1);
 
     CDataPool dp1("elevator1", sizeof(struct data));
@@ -55,6 +54,7 @@ void elevator::GetElevatorStatus(){
 		}
 	}
 }
+
 
 void elevator::WriteToScreen(int x, int y, string input) {
 	theMutex->Wait();

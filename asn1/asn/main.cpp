@@ -1,6 +1,6 @@
 // main.cpp: defines the entry point for the console application
 #include "rt.h"
-#include "elevator.h"
+// #include "Q8Parent/elevator.h"
 #include <thread>
 #include <iostream>
 using namespace std;
@@ -10,14 +10,14 @@ struct io_dispatcher_pipeline {
 	char second;
 };
 
-struct data {
-	int dest_floor;
-	int curr_floor
-	bool openclosed;
-};
+// struct data {
+// 	int dest_floor;
+// 	int curr_floor;
+// 	bool openclosed;
+// };
 
-struct data *elevator1status;
-struct data *elevator2status;
+// data *elevator1status;
+// data *elevator2status;	
 
 
 void e1();
@@ -47,20 +47,18 @@ int main(void) {
 	elevator1_process.WaitForProcess();
 	io_process.WaitForProcess();
 
-
 	// Prevent auto exit
 	getchar();
 	return 0;
 }
+
 // Responds to changes in elevator1 status, and copies this status to local variables so that when a new command arrives, it can be dealt with immediately
 void e1(){
 	CSemaphore completion("done", 0, 1);
-	elevator e1("hehe xd");
+	// elevator e1("hehe xd");
 	CSemaphore		ps2("PS2", 0, 1);    // semaphore with initial value 0 and max value 1
 	CSemaphore		cs2("CS2", 1, 1);    // semaphore with initial value 1 and max value 1
 
-	CDataPool dp1("elevator1", sizeof(struct data));
-	elevator1status = (struct data*)(dp1.LinkDataPool()); // get pointer to data pool
 
 	while(completion.Read() != 1){
 		// elevator1status->asdf = 
@@ -71,12 +69,10 @@ void e1(){
 // Responds to changes in elevator2 status, and copies this status to local variables so that when a new command arrives, it can be dealt with immediately 
 void e2(){
 	CSemaphore completion("done", 0, 1);
-	elevator e2("hehe xd");
+	// elevator e2("hehe xd");
 	CSemaphore		ps4("PS4", 0, 1);    // semaphore with initial value 0 and max value 1
 	CSemaphore		cs4("CS4", 1, 1);    // semaphore with initial value 1 and max value 1
-
-	CDataPool dp1("elevator2", sizeof(struct data));
-	elevator2status = (struct data*)(dp1.LinkDataPool()); // get pointer to data pool
+	
 
 	while(completion.Read() != 1){
 		// elevator2status->asdf = 
@@ -93,6 +89,8 @@ void algo(){
     CSemaphore e2_command("e2", 0, 1);
 
 	io_dispatcher_pipeline temp;
+	temp.first = ' ';
+	temp.second = ' ';
 	
 	// Forever loop
 	while (temp.first != 'e' && temp.second != 'e'){
