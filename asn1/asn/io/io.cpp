@@ -40,7 +40,7 @@ int main()
 void e1(){
 	CSemaphore completion("done", 0, 1);
 	
-	CSemaphore		ps1("PS1", 0, 1);    // semaphore with initial value 0 and max value 1
+	CSemaphore		ps1("ee1 PS1", 0, 1);    // semaphore with initial value 0 and max value 1
 	CSemaphore		cs1("CS1", 1, 1);    // semaphore with initial value 1 and max value 1
 
 	// CMutex console("console");    

@@ -13,7 +13,7 @@ int main()
 	CSemaphore completion("done", 0, 1);
 	CSemaphore command("e1", 0, 1);
 
-	elevator e1("hehe xd");
+	elevator e1("ee2");
 
 	thread t1(test);
 
@@ -35,6 +35,6 @@ void test(){
 	elevator1status = (struct data*)(dp1.LinkDataPool()); // get pointer to data pool
 
 
-	
+
 
 }

@@ -10,7 +10,7 @@ int main()
 	CSemaphore completion("done", 0, 1);
 	CSemaphore command("e2", 0, 1);
 
-	elevator e2("not hehe xd");
+	elevator e2("ee2");
 
 	// while(completion.Read() != 1){
 	// 	command.Wait();

@@ -28,10 +28,40 @@ void elevator::set_dest(int floor){
 	datapool_ptr->dest_floor = floor;
 	theMutex->Signal();
 }
-// void elevator::update_status(){
-// 	GetElevatorStatus();
-// }
 
+// Consumer synchronization for dispatcher, p2c2
+thedata elevator::dispatcher_syncrhonize(thedata *data){
+    CSemaphore      completed("done", 0, 1);
+
+	ps2->Wait() ;		// wait for producer process to signal producer semaphore
+	// Read all data from elevator
+	data->dest_floor = datapool_ptr -> dest_floor;
+	data->curr_floor = datapool_ptr -> curr_floor;
+	data->closed = datapool_ptr -> closed;
+	data->idle = datapool_ptr -> idle;
+
+	cs2->Signal();	
+	
+}
+
+// Consumer synchronization for io, p1c1
+thedata elevator::io_syncrhonize(thedata *data){
+    CSemaphore      completed("done", 0, 1);
+
+	ps2->Wait() ;		// wait for producer process to signal producer semaphore
+	if (completed.Read() > 0)
+		return;
+	// Read all data from elevator
+	data->dest_floor = datapool_ptr -> dest_floor;
+	data->curr_floor = datapool_ptr -> curr_floor;
+	data->closed = datapool_ptr -> closed;
+	data->idle = datapool_ptr -> idle;
+
+	cs2->Signal();	
+
+}
+
+// Producer synhcronization
 void elevator::GetElevatorStatus(){
 
     CSemaphore      completed("done", 0, 1);
@@ -40,17 +70,17 @@ void elevator::GetElevatorStatus(){
 	while(completed.Read() != 1){
 		// Amount of time to sleep in between floors (to simulate floor travelling)
 		Sleep(1000); 
-		if (completed.Read() != 1){
+		if (completed.Read() > 0 ){
 				return;
 		}
 		// Elevator is the producer, we produce the floors. IO and dispatcher reads the current value
 		if (ps1->Read() > 0 && ps2->Read() > 0) {
 			cs1->Wait();		// wait for consumer processes to signal producer semaphore
-			if (completed.Read() != 1){
+			if (completed.Read()  > 0){
 				return;
 			}
 			cs2->Wait();
-			if (completed.Read() != 1){
+			if (completed.Read()  > 0){
 				return;
 			}
 			// Read elevator status, and go up or down depending on what it sees.

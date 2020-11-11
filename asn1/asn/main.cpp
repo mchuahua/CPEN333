@@ -1,6 +1,6 @@
 // main.cpp: defines the entry point for the console application
 #include "rt.h"
-// #include "Q8Parent/elevator.h"
+#include "Q8Parent/elevator.h"
 #include <thread>
 #include <iostream>
 using namespace std;
@@ -10,9 +10,9 @@ struct io_dispatcher_pipeline {
 	char second;
 };
 
-void e1();
-void e2();
-void algo();
+void e1(thedata *elevator1data);
+void e2(thedata *elevator2data);
+void algo(thedata *elevator1data, thedata *elevator2data);
 
 // This is the dispatcher process. It creates other processes and delegates things.
 int main(void) {
@@ -22,10 +22,12 @@ int main(void) {
 	//CProcess elevator2_process("elevator2.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
 	CProcess io_process("io.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
 	
+	thedata elevator1data;
+	thedata elevator2data;
 	// Create 3 threads
-	thread t1(e1); 
-	//thread t2(e2);
-	thread t3(algo);
+	thread t1(e1, &elevator1data); 
+	//thread t2(e2, &elevator2data);
+	thread t3(algo, &elevator1data, &elevator2data);
 
 	// Wait for threads to finish
 	t1.join();
@@ -43,36 +45,30 @@ int main(void) {
 }
 
 // Responds to changes in elevator1 status, and copies this status to local variables so that when a new command arrives, it can be dealt with immediately
-void e1(){
+void e1(thedata *elevator1data){
 	CSemaphore completion("done", 0, 1);
-	// elevator e1("hehe xd");
-	CSemaphore		ps2("PS2", 0, 1);    // semaphore with initial value 0 and max value 1
-	CSemaphore		cs2("CS2", 1, 1);    // semaphore with initial value 1 and max value 1
 
+	elevator elev1("ee1");
 
 	while(completion.Read() != 1){
-		// elevator1status->asdf = 
+		elev1.dispatcher_syncrhonize(elevator1data);
 	}
-
 }
 
 // Responds to changes in elevator2 status, and copies this status to local variables so that when a new command arrives, it can be dealt with immediately 
-void e2(){
+void e2(thedata *elevator2data){
 	CSemaphore completion("done", 0, 1);
-	// elevator e2("hehe xd");
-	CSemaphore		ps4("PS4", 0, 1);    // semaphore with initial value 0 and max value 1
-	CSemaphore		cs4("CS4", 1, 1);    // semaphore with initial value 1 and max value 1
 	
+	elevator elev1("ee2");
 
 	while(completion.Read() != 1){
-		// elevator2status->asdf = 
+		elev1.dispatcher_syncrhonize(elevator2data);
 	}
-
 }
 
 // Checks pipeline for stuff. Triggers completion or
 // looks at status of elevators and decides which elevator is in the best position to deal with incoming up/down request
-void algo(){
+void algo(thedata *elevator1data, thedata *elevator2data){
 	CTypedPipe <io_dispatcher_pipeline> pipe1("io_dispatcher_pipeline", 1024);
 	CSemaphore completion("done", 0, 1);
     CSemaphore e1_command("e1", 0, 1);
@@ -84,10 +80,13 @@ void algo(){
 	
 	// Forever loop
 	while (temp.first != 'e' && temp.second != 'e'){
-
 		// insert algo here
-
-
+		// 1. check pipeline for stuff
+		// 2. if there is stuff, and its not ee, decide which elevator will pass to
+		// - if ee, go to ground, open, stop
+		// - if both elevators are not idle, wait until the first one is idle and pass it to that one.
+		// if both elevators are idle, get the closest one to the command floor
+		
 		// e1_command.Signal() or e2_command.Signal(); 
 		// puts info into mailbox (? wtf is this?)
 
