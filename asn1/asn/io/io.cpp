@@ -1,5 +1,5 @@
 #include "../rt.h"
-#include "../elevator.h"
+#include "../Q8Parent/elevator.h"
 #include <iostream>
 #include <thread>
 using namespace std;
@@ -9,14 +9,8 @@ struct io_dispatcher_pipeline {
 	char second;
 };
 
-struct data {
-	int dest_floor;
-	int curr_floor
-	bool openclosed;
-};
-
-void e1(thedata *elevator1data);
-void e2(thedata *elevator2data);
+void e1();
+void e2();
 void input();
 
 int main()
@@ -26,7 +20,7 @@ int main()
 	thedata elevator1data;
 	thedata elevator2data;
 	// Creating three threads: updates from elevator1 / 2 + screen redraw, input of commands
-	thread t1(e1, &elevator1data);
+	thread t1(e1);
 	// thread t2(e2);
 	thread t3(input);
 
@@ -69,11 +63,13 @@ void input(){
 	CTypedPipe <io_dispatcher_pipeline> pipe1("io_dispatcher_pipeline", 1024);
 	io_dispatcher_pipeline temp;
 	// Forever loop
-	while(completion.Read() != 1){
+	while(1){
 		// Get characters
-
+		cout << "Enter characters: " <<endl;
+		string s;
+		getline(cin, s);
 		// Validation of characters (regex)
-
+		cout << "you wrote " << s;
 		// Write to pipeline 
 		// temp.first =
 		// temp.second = 

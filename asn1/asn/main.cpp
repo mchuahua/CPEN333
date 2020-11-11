@@ -18,24 +18,24 @@ void algo(thedata *elevator1data, thedata *elevator2data);
 int main(void) {
 	
 	// Create 3 processes
-	CProcess elevator1_process("elevator1.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
+	// CProcess elevator1_process("elevator1.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
 	//CProcess elevator2_process("elevator2.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
 	CProcess io_process("io.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
 	
 	thedata elevator1data;
 	thedata elevator2data;
 	// Create 3 threads
-	thread t1(e1, &elevator1data); 
+	// thread t1(e1, &elevator1data); 
 	//thread t2(e2, &elevator2data);
-	thread t3(algo, &elevator1data, &elevator2data);
+	// thread t3(algo, &elevator1data, &elevator2data);
 
 	// Wait for threads to finish
-	t1.join();
+	// t1.join();
 	//t2.join();
-	t3.join();
+	// t3.join();
 	
 	// Waiting for processes to terminate
-	elevator1_process.WaitForProcess();
+	// elevator1_process.WaitForProcess();
 	//elevator1_process.WaitForProcess();
 	io_process.WaitForProcess();
 
