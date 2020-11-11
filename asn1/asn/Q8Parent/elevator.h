@@ -22,8 +22,9 @@ public:
 	//void GetElevator2Status();
 	void GetElevatorStatus();
 	void set_dest(int floor);
-	thedata dispatcher_syncrhonize(thedata *data);
-	thedata io_syncrhonize(thedata *data);
+	void dispatcher_syncrhonize(thedata *data);
+	void io_syncrhonize(thedata *data);
+	void WriteToConsole(int x, int y);
 	//void update_status();
 
 private:

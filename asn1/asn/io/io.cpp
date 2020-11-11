@@ -15,16 +15,18 @@ struct data {
 	bool openclosed;
 };
 
-void e1();
-void e2();
+void e1(thedata *elevator1data);
+void e2(thedata *elevator2data);
 void input();
 
 int main()
 {
 	cout << "Hello from io process !!!!!!" << endl;
 
+	thedata elevator1data;
+	thedata elevator2data;
 	// Creating three threads: updates from elevator1 / 2 + screen redraw, input of commands
-	thread t1(e1);
+	thread t1(e1, &elevator1data);
 	// thread t2(e2);
 	thread t3(input);
 
@@ -39,18 +41,12 @@ int main()
 // Attempts to get status of elevator. may be blocked if no new data
 void e1(){
 	CSemaphore completion("done", 0, 1);
-	
-	CSemaphore		ps1("ee1 PS1", 0, 1);    // semaphore with initial value 0 and max value 1
-	CSemaphore		cs1("CS1", 1, 1);    // semaphore with initial value 1 and max value 1
 
-	// CMutex console("console");    
-	CMutex console("console");
-
+	elevator elev1("ee1");
 
 	while(completion.Read() != 1){
-		
-	}	
-
+		elev1.WriteToConsole(50, 50);
+	}
 
 }
 
@@ -58,13 +54,11 @@ void e1(){
 // Attempts to get status of elevator. may be blocked if no new data
 void e2(){
 	CSemaphore completion("done", 0, 1);
-	// CMutex console("console");
-	elevator e2("hehe xd");
-	CSemaphore		ps3("PS3", 0, 1);    // semaphore with initial value 0 and max value 1
-	CSemaphore		cs3("CS3", 1, 1);    // semaphore with initial value 1 and max value 1
+
+	elevator elev1("ee2");
 
 	while(completion.Read() != 1){
-		// get mutex, use e2.WriteToConsole();
+		elev1.WriteToConsole(50, 50);
 	}
 
 }

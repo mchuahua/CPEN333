@@ -30,7 +30,7 @@ void elevator::set_dest(int floor){
 }
 
 // Consumer synchronization for dispatcher, p2c2
-thedata elevator::dispatcher_syncrhonize(thedata *data){
+void elevator::dispatcher_syncrhonize(thedata *data){
     CSemaphore      completed("done", 0, 1);
 
 	ps2->Wait() ;		// wait for producer process to signal producer semaphore
@@ -45,7 +45,7 @@ thedata elevator::dispatcher_syncrhonize(thedata *data){
 }
 
 // Consumer synchronization for io, p1c1
-thedata elevator::io_syncrhonize(thedata *data){
+void elevator::io_syncrhonize(thedata *data){
     CSemaphore      completed("done", 0, 1);
 
 	ps2->Wait() ;		// wait for producer process to signal producer semaphore
@@ -145,15 +145,21 @@ void elevator::GetElevatorStatus(){
 // 	// }
 // }
 
-// Not even needed
+void elevator::WriteToConsole(int x, int y){
+	WriteToScreen(x, y, "Dest floor: " + to_string(datapool_ptr->dest_floor));
+	WriteToScreen(x, y+1, "Curr floor: " + to_string(datapool_ptr->curr_floor));
+	WriteToScreen(x, y+2, "Is door closed?: " + to_string(datapool_ptr->closed));
+	WriteToScreen(x, y+3, "Idle: " + to_string(datapool_ptr->idle));
+}
+
+// Not even needed.... or is it?
 void elevator::WriteToScreen(int x, int y, string input) {
 	theMutex->Wait();
 	MOVE_CURSOR(x, y);             	// move cursor to cords [x,y] 
-	cout << input << " @ " << x << " " << y;
+	// cout << input << " @ " << x << " " << y;
+	cout << input ;
 	//printf("%s @ ( %d , %d )", input, x, y);
 	cout.flush();
 	//fflush(stdout);		      	// force output to be written to screen now
 	theMutex->Signal();
-	Sleep(500);
-
 }
