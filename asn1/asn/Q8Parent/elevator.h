@@ -4,6 +4,9 @@
 
 #define ELEVATOR1 1
 #define ELEVATOR2 2
+
+const CMutex console("M1");
+
 struct thedata {
 	int dest_floor = 0;
 	int curr_floor = 0;
@@ -38,5 +41,4 @@ private:
 	CSemaphore *ps2;
 	CSemaphore *cs1;
 	CSemaphore *cs2;
-
 };

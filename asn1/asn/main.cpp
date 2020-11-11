@@ -27,18 +27,22 @@ int main(void) {
 	// Create 3 threads
 	// thread t1(e1, &elevator1data); 
 	//thread t2(e2, &elevator2data);
-	// thread t3(algo, &elevator1data, &elevator2data);
+	thread t3(algo, &elevator1data, &elevator2data);
 
 	// Wait for threads to finish
 	// t1.join();
 	//t2.join();
-	// t3.join();
+	t3.join();
 	
 	// Waiting for processes to terminate
 	// elevator1_process.WaitForProcess();
 	//elevator1_process.WaitForProcess();
 	io_process.WaitForProcess();
-
+	console.Wait();
+	MOVE_CURSOR(0,12);
+	cout << "dispatcher (main) process ended. Press enter to end program";
+	MOVE_CURSOR(18,5);
+	console.Signal();
 	// Prevent auto exit
 	getchar();
 	return 0;
@@ -91,7 +95,18 @@ void algo(thedata *elevator1data, thedata *elevator2data){
 		// puts info into mailbox (? wtf is this?)
 
 		pipe1.Read(&temp);
+		console.Wait();
+		MOVE_CURSOR(0,8);
+		cout << "Read " << temp.first << temp.second;
+		MOVE_CURSOR(18,5);
+		console.Signal();
 	}
+	console.Wait();
+	MOVE_CURSOR(0,10);
+	cout << "out of ee exit ";
+	MOVE_CURSOR(18,5);
+	console.Signal();
 
 	completion.Signal();
+	return;
 }
