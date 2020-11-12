@@ -4,6 +4,11 @@
 
 using namespace std;
 
+/* Elevator 2:
+- Have wait semaphore triggered by dispatcher
+- Have mailbox to get status from dispatcher
+- Update status using Update_Status()
+*/
 int main()
 {
 	cout << "Hello from elevator2 process !!!!!!" << endl;

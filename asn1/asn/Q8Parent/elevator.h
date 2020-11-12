@@ -12,6 +12,7 @@ struct thedata {
 	int curr_floor = 0;
 	bool closed = true;
 	bool idle = true;
+	bool up = true;
 };
 
 // struct thedata *elevator1status;
@@ -23,12 +24,12 @@ public:
 	elevator(string name);
 	~elevator();
 	//void GetElevator2Status();
-	void GetElevatorStatus();
+	void GetElevatorStatus(thedata &data);
 	void set_dest(int floor);
-	void dispatcher_syncrhonize(thedata *data);
-	void io_syncrhonize(thedata *data);
+	void GetElevatorStatus_dispatcher(thedata *data);
+	void GetElevatorStatus_io(thedata *data);
 	void WriteToConsole(int x, int y);
-	//void update_status();
+	void Update_Status(thedata *data);
 
 private:
 	void WriteToScreen(int x, int y, string input);
@@ -42,3 +43,8 @@ private:
 	CSemaphore *cs1;
 	CSemaphore *cs2;
 };
+
+
+UINT encode(int curr, int dest, bool idle, bool closed, bool up);
+
+thedata decode(UINT message);
