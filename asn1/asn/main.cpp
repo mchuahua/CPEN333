@@ -1,9 +1,11 @@
-// main.cpp: defines the entry point for the console application
+	// main.cpp: defines the entry point for the console application
 #include "rt.h"
 #include "Q8Parent/elevator.h"
 #include <thread>
 #include <iostream>
 #include <regex>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 struct io_dispatcher_pipeline {
@@ -25,11 +27,9 @@ elevator elev2("ee2");
 - Creates e1, e2, algo thread
 */
 int main(void) {
-	console.Wait();
-		cout << encode(4,9, true, true, true);
-		console.Signal();
 
-	decode(encode(4, 9, true, true, true));
+	
+
 	// Create 3 processes
 	CProcess elevator1_process("elevator1.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
 	CProcess elevator2_process("elevator2.exe", NORMAL_PRIORITY_CLASS, PARENT_WINDOW, ACTIVE);
@@ -38,8 +38,17 @@ int main(void) {
 	
 	thedata elevator1data;
 	thedata elevator2data;
-
-
+// Sleep(1000);
+// 	while (1){
+		
+// 		console.Wait();
+// 		MOVE_CURSOR(0,8);
+//  		cout << "Enter a UINT: ";
+//  		cin >> a;
+// 		console.Signal();
+// 		elevator1_process.Post(a);
+		
+// 	}
 	// Create 3 threads
 	thread t1(e1, &elevator1data); 
 	//thread t2(e2, &elevator2data);
@@ -71,7 +80,10 @@ void e1(thedata *elevator1data){
 	CSemaphore completion("done", 0, 1);
 
 	while(completion.Read() != 1){
+		// if (completion.Read() == 1)
+			// return;
 		elev1.GetElevatorStatus_dispatcher(elevator1data);
+
 	}
 }
 
@@ -117,21 +129,67 @@ void algo(thedata *elevator1data, thedata *elevator2data, CProcess *elevator1_pr
 		MOVE_CURSOR(18,5);
 		console.Signal();
 		string s({temp.first, temp.second});
-		// insert algo here
-		// 1. check pipeline for stuff
-		// 2. if there is stuff, and its not ee, decide which elevator will pass to
-		// - if ee, go to ground, open, stop
-		// - if both elevators are not idle, wait until the first one is idle and pass it to that one.
-		// if both elevators are idle, get the closest one to the command floor
+		/* insert algo here
+		1. check pipeline for stuff
+		2. if there is stuff, and its not ee, decide which elevator will pass to
+		- if ee, go to ground, open, stop
+
+
+		CHECKS: 
+
+		1. idle check
+		-BOTH ELEVATORS IDLE
+			Get the closest one to the command floor
+			Same floor, command elevator 1
+			
+			Checks:
+			1. not same curr floor, if false- send e1
+			2. Closest floor (curr floor vs floor to dispatch to)
+
+		-ONE ELEVATOR IDLE
+			if passenger direction == elevator direction, stop otw, EVEN if one elevator is idle (POWER SAVINGS), sort low to high
+			Otherwise use idle elevator
+
+			Checks:
+			1. If command direction == non-idle elevator direction && non-idle elevator curr floor < idle elevator curr floor
+		-NONE IDLE
+			Delegate to closest dest with same direction, sort low to high 
+			Otherwise use first to be idle.
+
+			Checks:
+			1. if elevator in same direction and before/after dispatch floor, already moving changes dest to this floor and then sets dest again
+			2. if none in same direction, checks for closest to be finihsing, and puts it into that one, then sorts (vector sort)
+
+		1
+		0
+		2->9   
+		7->9   1 0
+
+		Overide:
+		-FAULT
+			Stop elevator. have graphic, clear dest vector
+		-END
+			Stop both elevators, go to ground, open, stop
+	
+		
+Pipeline io pushes to queue
+Dispatcher algo pops queue depending on idle elevators and checks above.
+
+
+		*/
 		if (regex_search(s, inside)){// - Inside: 1 or 2, 0-9 {[1-2][0-9]}
 			// Elevator 1
 			if (temp.first == '1'){
 				console.Wait();
 				MOVE_CURSOR(0,2);
 				cout << "setting dest floor "<< temp.second;
+				// cout << elevator1data->curr_floor << " " << false << true <<(((int)temp.second - elevator1data->curr_floor)>0? true: false) ;
+				// cout << " " << encode(elevator1data->curr_floor, (int)temp.second, false, true, (((int)temp.second - elevator1data->curr_floor)>0? true: false));
 				console.Signal();
-				elevator1_process->Post(1);
-				e1_command.Signal();
+				int asfd = temp.second - '0';
+				elevator1_process->Post(encode(elevator1data->curr_floor, asfd, false, true, ((asfd - elevator1data->curr_floor)>0? true: false), elevator1data->fault));
+				//elevator1_process->Post(temp.second);
+				// e1_command.Signal();
 			}
 			// Elevator 2, do nohting for now
 			else if (temp.first == '2'){
@@ -153,6 +211,17 @@ void algo(thedata *elevator1data, thedata *elevator2data, CProcess *elevator1_pr
 		}
 		else if (regex_search(s, fault)){// - fault + or -, 1 or 2 {[+|-][1|2]}
 			//pause
+			if (temp.second == '1'){
+				if (temp.first == '-'){
+					// Stop elevator 1 and clear destinations.
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, elevator1data->idle, elevator1data->closed, elevator1data->up, true));
+				}
+				if (temp.first == '+'){
+					// Stop elevator 1 and clear destinations.
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, elevator1data->idle, elevator1data->closed, elevator1data->up, false));
+				}
+			}
+			
 		}
 		else if (regex_search(s, end)){
 			//pause
@@ -161,7 +230,7 @@ void algo(thedata *elevator1data, thedata *elevator2data, CProcess *elevator1_pr
 		// e1_command.Signal() or e2_command.Signal(); 
 		// puts info into elevator
 
-		elev1.Update_Status(&data);
+		//elev1.Update_Status(&data);
 		// elev2.Update_Status(data);
 	}
 	console.Wait();

@@ -51,7 +51,7 @@ void elevator::GetElevatorStatus_dispatcher(thedata *data){
 	theMutex->Signal();
 	// Consumer unlock
 	cs2->Signal();	
-	
+	Sleep(100);
 }
 
 // Consumer synchronization for io, ps1 cs1
@@ -76,7 +76,7 @@ void elevator::GetElevatorStatus_io(thedata *data){
 	theMutex->Signal();
 	// Consumer unlock
 	cs1->Signal();	
-
+Sleep(100);
 }
 
 // Producer consumer semaphore.
@@ -111,6 +111,7 @@ void elevator::Update_Status(thedata *data){
 			
 	ps1->Signal();		// signal the consumer semaphore to wake up the producer
 	ps2->Signal();
+	Sleep(100);
 }
 
 // Unneeded.
@@ -127,26 +128,46 @@ void elevator::GetElevatorStatus(thedata &data){
 	theMutex->Signal();
 }
 
+/*
+create vector leave dest as it was
+dest still 
 
+decode encode vector<int>
+
+*/
 //ENCODE AND DECODE MESSAGES FROM MAILBOX
-UINT encode(int curr, int dest, bool idle, bool closed, bool up){ 
-	UINT returnthing = 0;
-	returnthing += (UINT) dest ;
-	returnthing += (UINT) curr * 10;
+UINT encode(int curr, int dest, bool idle, bool closed, bool up, bool fault){ 
+	int returnthing = 0;
+	// for (int i = 0; i < 3; ++i){
+	// 	dest.push_back(6);
+	// }
+
+	returnthing += dest ;
+	cout << " dest: " << dest;
+	returnthing += (curr * 10);
+	// cout << " cur: " << curr;
 	returnthing += idle ? 100 : 0;
 	returnthing += closed ? 1000 : 0;
 	returnthing += up ? 10000 : 0;
+	returnthing += fault ? 5000 : 0;
+	// for (int i = 0; i < dest.size(); i++){
+	// 	returnthing += (UINT) dest[i] * 10000 * pow(10, i);
+	// }
 
 	return returnthing;	
 }
 
 thedata decode(UINT message){
 	thedata decoded;
-	decoded.dest_floor 	= ((message) / 1) % 10;
+	decoded.dest_floor  = ((message)/ 1)% 10;
 	decoded.curr_floor 	= ((message) / 10) % 10;
 	decoded.idle 		= ((message) / 100) % 10;
-	decoded.closed 		= ((message) / 1000) % 10;
-	decoded.up 			= ((message) / 10000) % 10;
+	decoded.up 		= ((message) / 10000) % 10;
+	
+// Decode fault is 5
+	int temp			= ((message) / 1000) % 10;
+	decoded.up 			= (temp == 6 || temp == 1);
+	decoded.fault 		= (temp > 1);
 
 	return decoded;
 }

@@ -18,6 +18,7 @@ void e1display();
 void e2display();
 void input();
 void setscene();
+void anielevator(int elev,int curr_floor, bool closed, bool fault);
 
 /*
 Deals with all things displayed on console.
@@ -58,35 +59,47 @@ void e1display(){
 
 	elevator elev1("ee1");
 	thedata data;
+	console.Wait();
+	MOVE_CURSOR(50, 0);
+	cout << "ELEVATOR 1 STATUS";
+	MOVE_CURSOR(50, 8);
+	cout << "ELEVATOR 2 STATUS";
+	console.Signal();
 
 	while(completion.Read() != 1){
 		elev1.GetElevatorStatus_io(&data);
 		console.Wait();
-		MOVE_CURSOR(50, 0);             	// move cursor to cords [x,y] 
-		cout << "Current floor: " << data.curr_floor;
-		MOVE_CURSOR(50, 1);             	// move cursor to cords [x,y] 
-		cout << "Dest floor: " << data.dest_floor;
 		MOVE_CURSOR(50, 2);             	// move cursor to cords [x,y] 
-		if (data.idle)
+		cout << "Current floor: " << data.curr_floor;
+		MOVE_CURSOR(50, 3);             	// move cursor to cords [x,y] 
+		cout << "Dest floor: " << data.dest_floor;
+		MOVE_CURSOR(50, 4);             	// move cursor to cords [x,y] 
+		if (!data.idle)
 			cout << "Idle    ";
 		else
 			cout << "Not idle";
-		MOVE_CURSOR(50, 3);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 5);             	// move cursor to cords [x,y] 
 		if (data.closed)
 			cout << "Doors Closed";
 		else
 			cout << "Doors Open  ";
-		MOVE_CURSOR(50, 4);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 6);             	// move cursor to cords [x,y] 
 		if (data.up)
 			cout << "Going up  ";
 		else 
 			cout << "Going down";
+		MOVE_CURSOR(50, 7);             	// move cursor to cords [x,y] 
+		if (data.fault)
+			cout << "FAULT  ";
+		else 
+			cout << "no fault";
 		cout.flush();
 		//fflush(stdout);		      	// force output to be written to screen now
 		// Move back to where input is
+		anielevator (1,data.curr_floor,data.closed,data.fault);
 		//MOVE_CURSOR(18,5);
 		console.Signal();
-
+	Sleep(100);
 	}
 
 }
@@ -102,21 +115,21 @@ void e2display(){
 	while(completion.Read() != 1){
 		elev1.GetElevatorStatus_io(&data);
 		console.Wait();
-		MOVE_CURSOR(50, 5);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 9);             	// move cursor to cords [x,y] 
 		cout << "Current floor: " << data.curr_floor;
-		MOVE_CURSOR(50, 6);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 10);             	// move cursor to cords [x,y] 
 		cout << "Dest floor: " << data.dest_floor;
-		MOVE_CURSOR(50, 7);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 11);             	// move cursor to cords [x,y] 
 		if (data.idle)
 			cout << "Idle    ";
 		else
 			cout << "Not idle";
-		MOVE_CURSOR(50, 8);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 12);             	// move cursor to cords [x,y] 
 		if (data.closed)
 			cout << "Doors Closed";
 		else
 			cout << "Doors Open  ";
-		MOVE_CURSOR(50, 9);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 13);             	// move cursor to cords [x,y] 
 		if (data.up)
 			cout << "Going up  ";
 		else 
@@ -126,6 +139,7 @@ void e2display(){
 		// Move back to where input is
 		//MOVE_CURSOR(18,5);
 		console.Signal();
+	Sleep(100);
 	}
 
 }
@@ -220,103 +234,105 @@ void input(){
 	}
 
 }
-
-void setscene(){
+void setscene() {
 	console.Wait();
-	MOVE_CURSOR(200,3);
-	cout << R"(	
-							  
-				     _________|_________     || 
-				    /                   \   _||_
-				   <                     > ( oo )
-				   <                     >_| ^^ |_
-				   <                     >   @    \
-				  /~                     ~\ . . _ |
-				 /~~                     ~~\    | |
-				/~~~~~~~~~~~~~~~~~~~~~~~~~~~\/ _| |
-				|             |            ]|/ / [m]
-				|[            |            [m]
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[            |            ]|
-				|[============|============]|)";
-				// TODO: make bottom bulbous
+	MOVE_CURSOR(0, 0);
+												cout << R"(	     
+										     _________|_________     || 
+										    /                   \   _||_
+										   <                     > ( oo )
+										   <      Freefall       >_| ^^ |_
+										   <      Elevators      >   @    \
+										  /~                     ~\ . . _ |
+										 /~~                     ~~\    | |
+										/~~~~~~~~~~~~~~~~~~~~~~~~~~~\/ _| |
+										|[            |            ]|/ / [m]
+										|[            |            [m]
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[            |            ]|
+										|[============|============]|)";
+	// TODO: make bottom bulbous
 	console.Signal();
 	return;
 }
 
-/*
-void drawelevator(){
+void anielevator(int elev,int curr_floor, bool closed, bool fault){
+	int topleftx = 80+(elev*4);
+	int toplefty = 54-(4*curr_floor);
 	console.Wait();
-	MOVE_CURSOR(20,30);
-	
-	if (status==closed){
-		cout << R"(
-				--------
-				|  ||  |
-				|  ||  |
-               	--------)";
+	MOVE_CURSOR(topleftx,toplefty);
+	if (closed){
+		cout <<"--------";
+		MOVE_CURSOR(topleftx,toplefty+1);
+		cout <<"|  ||  |";
+		MOVE_CURSOR(topleftx,toplefty+2);
+		cout <<"|  ||  |";
+   		MOVE_CURSOR(topleftx,toplefty+3);
+	    cout <<"--------";
 	}
-	else if (fault){
-		cout << R"(
-				--------
-				|| \/ ||
-				|| /\ ||
-               	--------)";
+	else if (~closed){
+		cout <<"--------";
+		MOVE_CURSOR(topleftx,toplefty+1);
+		cout <<"||    ||";
+		MOVE_CURSOR(topleftx,toplefty+2);
+		cout <<"||    ||";
+   		MOVE_CURSOR(topleftx,toplefty+3);
+	    cout <<"--------";
 	}
-	}
-	else{
-	cout << R"(
-			--------
-			||    ||
-            ||    ||
-            --------)";
+	else {
+		cout <<"--------";
+		MOVE_CURSOR(topleftx,toplefty+1);
+		cout <<"|  \\/  |";
+		MOVE_CURSOR(topleftx,toplefty+2);
+		cout <<"|  /\\  |";
+   		MOVE_CURSOR(topleftx,toplefty+3);
+	    cout <<"--------";
 	}
 	console.Signal();
 	return;
 }
-*/

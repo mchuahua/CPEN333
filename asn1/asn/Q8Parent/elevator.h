@@ -1,6 +1,8 @@
 #pragma once
 #include "../rt.h"
 #include <string>
+#include <vector>
+#include <algorithm>
 
 #define ELEVATOR1 1
 #define ELEVATOR2 2
@@ -8,11 +10,13 @@
 const CMutex console("M1");
 
 struct thedata {
-	int dest_floor = 0;
+	int dest_floor = 0; //end point
+//	int destinations[10]; // put in end point, and also the other floors
 	int curr_floor = 0;
 	bool closed = true;
 	bool idle = true;
 	bool up = true;
+	bool fault = false;
 };
 
 // struct thedata *elevator1status;
@@ -44,7 +48,6 @@ private:
 	CSemaphore *cs2;
 };
 
-
-UINT encode(int curr, int dest, bool idle, bool closed, bool up);
+UINT encode(int curr, int dest, bool idle, bool closed, bool up, bool fault);
 
 thedata decode(UINT message);
