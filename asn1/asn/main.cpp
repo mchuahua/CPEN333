@@ -175,8 +175,8 @@ void algo(thedata *elevator1data, thedata *elevator2data, CProcess *elevator1_pr
 Pipeline io pushes to queue
 Dispatcher algo pops queue depending on idle elevators and checks above.
 
-
 		*/
+		// Working, just needs check for at least present passenger to be able to set destination from inside
 		if (regex_search(s, inside)){// - Inside: 1 or 2, 0-9 {[1-2][0-9]}
 			// Elevator 1
 			if (temp.first == '1'){
@@ -186,52 +186,150 @@ Dispatcher algo pops queue depending on idle elevators and checks above.
 				// cout << elevator1data->curr_floor << " " << false << true <<(((int)temp.second - elevator1data->curr_floor)>0? true: false) ;
 				// cout << " " << encode(elevator1data->curr_floor, (int)temp.second, false, true, (((int)temp.second - elevator1data->curr_floor)>0? true: false));
 				console.Signal();
-				int asfd = temp.second - '0';
-				elevator1_process->Post(encode(elevator1data->curr_floor, asfd, false, true, ((asfd - elevator1data->curr_floor)>0? true: false), elevator1data->fault));
+				// int asfd = temp.second - '0';
+				elevator1data->passengers++;
+				if (elevator1data->dest_floor == 10){
+					elevator1data->dest_floor = temp.second - '0';
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, false, true, (((int)(temp.second - '0') - elevator1data->curr_floor)>0? true: false), elevator1data->fault, elevator1data->passengers));
+					elevator1_process->Post(encode2(elevator1data->dest_floor2, elevator1data->dest_floor3, elevator1data->dest_floor4));
+					elevator1_process->Post(encode3(elevator1data->dest_floor5 ));
+					e1_command.Signal();
+				}
+				else if (elevator1data->dest_floor2 == 10){
+					elevator1data->dest_floor2 = temp.second - '0';
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, false, true, elevator1data->up, elevator1data->fault, elevator1data->passengers));
+					elevator1_process->Post(encode2(elevator1data->dest_floor2, elevator1data->dest_floor3, elevator1data->dest_floor4));
+					elevator1_process->Post(encode3(elevator1data->dest_floor5 ));
+					e1_command.Signal();
+				}
+				else if (elevator1data->dest_floor3 == 10){
+					elevator1data->dest_floor3 = temp.second - '0';
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, false, true, elevator1data->up, elevator1data->fault, elevator1data->passengers));
+					elevator1_process->Post(encode2(elevator1data->dest_floor2, elevator1data->dest_floor3, elevator1data->dest_floor4));
+					elevator1_process->Post(encode3(elevator1data->dest_floor5 ));
+					e1_command.Signal();
+				}
+				else if (elevator1data->dest_floor4 == 10){
+					elevator1data->dest_floor4 = temp.second - '0';
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, false, true, elevator1data->up, elevator1data->fault, elevator1data->passengers));
+					elevator1_process->Post(encode2(elevator1data->dest_floor2, elevator1data->dest_floor3, elevator1data->dest_floor4));
+					elevator1_process->Post(encode3(elevator1data->dest_floor5 ));
+					e1_command.Signal();
+				}
+				else if (elevator1data->dest_floor5 == 10){
+					elevator1data->dest_floor5 = temp.second - '0';
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, false, true, elevator1data->up, elevator1data->fault, elevator1data->passengers));
+					elevator1_process->Post(encode2(elevator1data->dest_floor2, elevator1data->dest_floor3, elevator1data->dest_floor4));
+					elevator1_process->Post(encode3(elevator1data->dest_floor5 ));
+					e1_command.Signal();
+				}
 				//elevator1_process->Post(temp.second);
 				// e1_command.Signal();
 			}
-			// Elevator 2, do nohting for now
+			// Elevator 2
 			else if (temp.first == '2'){
 				// elev2.set_dest(temp.second);
-				int asfd = temp.second - '0';
-				elevator2_process->Post(encode(elevator2data->curr_floor, asfd, false, true, ((asfd - elevator2data->curr_floor)>0? true: false), elevator2data->fault));
-			
+				elevator2data->passengers++;
+				if (elevator2data->dest_floor == 10){
+					elevator2data->dest_floor = temp.second - '0';
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->dest_floor, false, true, ((int)((temp.second - '0') - elevator2data->curr_floor)>0? true: false), elevator2data->fault, elevator2data->passengers));
+					elevator2_process->Post(encode2(elevator2data->dest_floor2, elevator2data->dest_floor3, elevator2data->dest_floor4));
+					elevator2_process->Post(encode3(elevator2data->dest_floor5 ));
+					e2_command.Signal();
+				}
+				else if (elevator2data->dest_floor2 == 10){
+					elevator2data->dest_floor2 = temp.second - '0';
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->dest_floor, false, true, elevator2data->up, elevator2data->fault, elevator2data->passengers));
+					elevator2_process->Post(encode2(elevator2data->dest_floor2, elevator2data->dest_floor3, elevator2data->dest_floor4));
+					elevator2_process->Post(encode3(elevator2data->dest_floor5 ));
+					e2_command.Signal();
+				}
+				else if (elevator2data->dest_floor3 == 10){
+					elevator2data->dest_floor3 = temp.second - '0';
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->dest_floor, false, true, elevator2data->up, elevator2data->fault, elevator2data->passengers));
+					elevator2_process->Post(encode2(elevator2data->dest_floor2, elevator2data->dest_floor3, elevator2data->dest_floor4));
+					elevator2_process->Post(encode3(elevator2data->dest_floor5 ));
+					e2_command.Signal();
+				}
+				else if (elevator2data->dest_floor4 == 10){
+					elevator2data->dest_floor4 = temp.second - '0';
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->dest_floor, false, true, elevator2data->up, elevator2data->fault, elevator2data->passengers));
+					elevator2_process->Post(encode2(elevator2data->dest_floor2, elevator2data->dest_floor3, elevator2data->dest_floor4));
+					elevator2_process->Post(encode3(elevator2data->dest_floor5 ));
+					e2_command.Signal();
+				}
+				else if (elevator2data->dest_floor5 == 10){
+					elevator2data->dest_floor5 = temp.second - '0';
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->dest_floor, false, true, elevator2data->up, elevator2data->fault, elevator2data->passengers));
+					elevator2_process->Post(encode2(elevator2data->dest_floor2, elevator2data->dest_floor3, elevator2data->dest_floor4));
+					elevator2_process->Post(encode3(elevator2data->dest_floor5 ));
+					e2_command.Signal();
+				}
 			}
 		}
+		// not working atm, need to mimic inside if statement
 		else if (regex_search(s, outside)){// - outisde u or d, 0-9 {[u|d][0-9]}
 			// MEAT OF THE ALGORITHM
 			//send elev to floor
 			// Elevator 1
-			if (temp.first == '1'){
-				
-			}
+			if (temp.first == 'u'){
+				console.Wait();
+				MOVE_CURSOR(0,2);
+				cout << "Passenger at floor "<< temp.second;
+				// cout << elevator1data->curr_floor << " " << false << true <<(((int)temp.second - elevator1data->curr_floor)>0? true: false) ;
+				// cout << " " << encode(elevator1data->curr_floor, (int)temp.second, false, true, (((int)temp.second - elevator1data->curr_floor)>0? true: false));
+				console.Signal();
+				elevator1data->dest_floor = temp.second - '0';
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, false, true, (((int)(temp.second - '0') - elevator1data->curr_floor)>0? true: false), elevator1data->fault, elevator1data->passengers));
+					elevator1_process->Post(encode2(elevator1data->dest_floor2, elevator1data->dest_floor3, elevator1data->dest_floor4));
+					elevator1_process->Post(encode3(elevator1data->dest_floor5 ));
+					e1_command.Signal();			}
 			// Elevator 2, do nohting for now
-			else if (temp.first == '2'){
+			else if (temp.first == 'd'){
 				// elev2.set_dest(temp.second);
+								elevator2data->dest_floor = temp.second - '0';
+
+				elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->dest_floor, false, true, ((int)((temp.second - '0') - elevator2data->curr_floor)>0? true: false), elevator2data->fault, elevator2data->passengers));
+					elevator2_process->Post(encode2(elevator2data->dest_floor2, elevator2data->dest_floor3, elevator2data->dest_floor4));
+					elevator2_process->Post(encode3(elevator2data->dest_floor5 ));
+					e2_command.Signal();
 			}
-			
 		}
+		//Shoudl be working
 		else if (regex_search(s, fault)){// - fault + or -, 1 or 2 {[+|-][1|2]}
 			//pause
 			if (temp.second == '1'){
 				if (temp.first == '-'){
 					// Stop elevator 1 and clear destinations.
-					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, elevator1data->idle, elevator1data->closed, elevator1data->up, true));
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->curr_floor, elevator1data->idle, elevator1data->closed, elevator1data->up, true, elevator1data->passengers));
+					elevator1_process->Post(encode2(elevator1data->dest_floor2, elevator1data->dest_floor3, elevator1data->dest_floor4));
+					elevator1_process->Post(encode3(elevator1data->dest_floor5 ));
+					e1_command.Signal();
+
 				}
 				if (temp.first == '+'){
-					// Stop elevator 1 and clear destinations.
-					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->curr_floor, elevator1data->idle, elevator1data->closed, elevator1data->up, false));
+					// Start elevator 1 and clear destinations.
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->curr_floor, elevator1data->idle, elevator1data->closed, elevator1data->up, false, elevator1data->passengers));
+					elevator1_process->Post(encode2(elevator1data->dest_floor2, elevator1data->dest_floor3, elevator1data->dest_floor4));
+					elevator1_process->Post(encode3(elevator1data->dest_floor5 ));
+					e1_command.Signal();
 				}
 			}
 			else if (temp.second == '2'){
 				if (temp.first == '-'){
 					// Stop elevator 2 and clear destinations.
-					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->dest_floor, elevator2data->idle, elevator2data->closed, elevator2data->up, true));
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->curr_floor, elevator2data->idle, elevator2data->closed, elevator2data->up, true, elevator2data->passengers));
+					elevator2_process->Post(encode2(elevator2data->dest_floor2, elevator2data->dest_floor3, elevator2data->dest_floor4));
+					elevator2_process->Post(encode3(elevator2data->dest_floor5 ));
+					e2_command.Signal();
+
 				}
 				if (temp.first == '+'){
-					// Stop elevator 2 and clear destinations.
-					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->curr_floor, elevator2data->idle, elevator2data->closed, elevator2data->up, false));
+					// Start elevator 2 and clear destinations.
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->curr_floor, elevator2data->idle, elevator2data->closed, elevator2data->up, false, elevator2data->passengers));
+					elevator2_process->Post(encode2(elevator2data->dest_floor2, elevator2data->dest_floor3, elevator2data->dest_floor4));
+					elevator2_process->Post(encode3(elevator2data->dest_floor5 ));
+					e2_command.Signal();
 				}
 			}
 			

@@ -82,8 +82,17 @@ ________
     - ee (both elevators goto gnd, open, stop)
 
 TODO: 
-Make skelton
-regex / input validation 
+Message, Message2, Message3
+FIX floor 10  logic!!!!!!!!!!!!!
+passenger logic
+dest_floor logic (verify it works)
+Outside algo (important!)
+end correctly (important!)
+more than one passenger destination (? not sure if works)
+robustness
+
+
+algo for determining which one to put to 
 bells/whisltes
     - colour, clever dispatch algo, more than 2 elevators
 

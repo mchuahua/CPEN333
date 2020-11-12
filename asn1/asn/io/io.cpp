@@ -68,12 +68,26 @@ void e1display(){
 	int prev = 0;
 
 	while(completion.Read() != 1){
+		vector<int> asdf;
+		if (data.dest_floor != 10)
+			asdf.push_back(data.dest_floor);
+		if (data.dest_floor2 != 10)
+			asdf.push_back(data.dest_floor2);
+		if (data.dest_floor3 != 10)
+			asdf.push_back(data.dest_floor3);
+		if (data.dest_floor4 != 10)
+			asdf.push_back(data.dest_floor4);
+		if (data.dest_floor5 != 10)
+			asdf.push_back(data.dest_floor5);
 		elev1.GetElevatorStatus_io(&data);
 		console.Wait();
 		MOVE_CURSOR(50, 2);             	// move cursor to cords [x,y] 
 		cout << "Current floor: " << data.curr_floor;
 		MOVE_CURSOR(50, 3);             	// move cursor to cords [x,y] 
-		cout << "Dest floor: " << data.dest_floor;
+		cout << "Dest floor:";
+		for (int i = 0; i < asdf.size(); ++i){
+			cout << " " << asdf[i];
+		}
 		MOVE_CURSOR(50, 4);             	// move cursor to cords [x,y] 
 		if (!data.idle)
 			cout << "Idle    ";
@@ -91,7 +105,7 @@ void e1display(){
 			cout << "Going down";
 		MOVE_CURSOR(50, 7);             	// move cursor to cords [x,y] 
 		if (data.fault)
-			for (int i =2; i < 8; i++){
+			for (int i =2; i < 8; ++i){
 				MOVE_CURSOR(50, i);
 				cout << "FAULT            ";
 			}
@@ -119,13 +133,26 @@ void e2display(){
 	thedata data;
 
 	while(completion.Read() != 1){
+		vector<int> asdf;
+		if (data.dest_floor != 10)
+			asdf.push_back(data.dest_floor);
+		if (data.dest_floor2 != 10)
+			asdf.push_back(data.dest_floor2);
+		if (data.dest_floor3 != 10)
+			asdf.push_back(data.dest_floor3);
+		if (data.dest_floor4 != 10)
+			asdf.push_back(data.dest_floor4);
+		if (data.dest_floor5 != 10)
+			asdf.push_back(data.dest_floor5);
 		elev1.GetElevatorStatus_io(&data);
 		console.Wait();
 		MOVE_CURSOR(50, 15);             	// move cursor to cords [x,y] 
 		cout << "Current floor: " << data.curr_floor;
 		MOVE_CURSOR(50, 16);             	// move cursor to cords [x,y] 
-		cout << "Dest floor: " << data.dest_floor;
-		MOVE_CURSOR(50, 17);             	// move cursor to cords [x,y] 
+		cout << "Dest floor:";
+		for (int i = 0; i < asdf.size(); ++i){
+			cout << " " << asdf[i];
+		}		MOVE_CURSOR(50, 17);             	// move cursor to cords [x,y] 
 		if (!data.idle)
 			cout << "Idle    ";
 		else
@@ -142,7 +169,7 @@ void e2display(){
 			cout << "Going down";
 		MOVE_CURSOR(50, 20);             	// move cursor to cords [x,y] 
 		if (data.fault)
-			for (int i = 15; i < 21; i++){
+			for (int i = 15; i < 21; ++i){
 				MOVE_CURSOR(50, i);
 				cout << "FAULT            ";
 			}
@@ -366,3 +393,12 @@ void anielevator(int elev,int curr_floor, bool closed, bool fault, int prev){
 	console.Signal();
 	return;
 }
+
+/*
+anipassenger(){
+
+
+
+
+}
+*/

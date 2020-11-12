@@ -48,6 +48,12 @@ void elevator::GetElevatorStatus_dispatcher(thedata *data){
 	data->idle 			= datapool_ptr -> idle;
 	data->up 			= datapool_ptr -> up;
 	data->fault			= datapool_ptr -> fault;
+	data->passengers	= datapool_ptr -> passengers;
+	data->dest_floor2	= datapool_ptr -> dest_floor2;
+	data->dest_floor3	= datapool_ptr -> dest_floor3;
+	data->dest_floor4	= datapool_ptr -> dest_floor4;
+	data->dest_floor5	= datapool_ptr -> dest_floor5;
+
 	// Data unlock
 	theMutex->Signal();
 	// Consumer unlock
@@ -74,7 +80,12 @@ void elevator::GetElevatorStatus_io(thedata *data){
 	data->idle 			= datapool_ptr -> idle;
 	data->up 			= datapool_ptr -> up;
 	data->fault			= datapool_ptr -> fault;
-	
+	data->passengers	= datapool_ptr -> passengers;
+	data->dest_floor2	= datapool_ptr -> dest_floor2;
+	data->dest_floor3	= datapool_ptr -> dest_floor3;
+	data->dest_floor4	= datapool_ptr -> dest_floor4;
+	data->dest_floor5	= datapool_ptr -> dest_floor5;
+
 	// Data unlock
 	theMutex->Signal();
 	// Consumer unlock
@@ -110,6 +121,12 @@ void elevator::Update_Status(thedata *data){
 	datapool_ptr->closed 		= data->closed;
 	datapool_ptr->up 			= data->up;
 	datapool_ptr->fault			= data->fault;
+	datapool_ptr->passengers	= data->passengers;
+	datapool_ptr->dest_floor2	= data->dest_floor2;
+	datapool_ptr->dest_floor3	= data->dest_floor3;
+	datapool_ptr->dest_floor4	= data->dest_floor4;
+	datapool_ptr->dest_floor5	= data->dest_floor5;
+
 
 	theMutex->Signal();
 			
@@ -141,20 +158,29 @@ decode encode vector<int>
 
 */
 //ENCODE AND DECODE MESSAGES FROM MAILBOX
-UINT encode(int curr, int dest, bool idle, bool closed, bool up, bool fault){ 
+// Using bitwise encoding because max int mailbox supports is 32000, so we can't do one hot 
+UINT encode(int curr, int dest, bool idle, bool closed, bool up, bool fault, int passenger){ 
 	int returnthing = 0;
 	// for (int i = 0; i < 3; ++i){
 	// 	dest.push_back(6);
 	// }
-
+	//First four bits, [3:0]
 	returnthing += dest ;
-	cout << " dest: " << dest;
-	returnthing += (curr * 10);
+	// cout << " dest: " << dest;
+	//[8:4]
+	returnthing += (curr << 4);
 	// cout << " cur: " << curr;
-	returnthing += idle ? 100 : 0;
-	returnthing += closed ? 1000 : 0;
-	returnthing += up ? 10000 : 0;
-	returnthing += fault ? 5000 : 0;
+	// [9]
+	returnthing += idle << 9;
+	// [10]
+	returnthing += closed << 10;
+	// [11]
+	returnthing += up << 11;
+	// [12]
+	returnthing += fault <<12;
+	// [16:13]
+	returnthing += passenger <<13;
+
 	// cout << "FAULT " <<fault;
 	// for (int i = 0; i < dest.size(); i++){
 	// 	returnthing += (UINT) dest[i] * 10000 * pow(10, i);
@@ -162,18 +188,52 @@ UINT encode(int curr, int dest, bool idle, bool closed, bool up, bool fault){
 
 	return returnthing;	
 }
-
-thedata decode(UINT message){
-	thedata decoded;
-	decoded.dest_floor  = ((message)/ 1)% 10;
-	decoded.curr_floor 	= ((message) / 10) % 10;
-	decoded.idle 		= ((message) / 100) % 10;
-	decoded.up 		= ((message) / 10000) % 10;
+UINT encode2(int dest_floor2, int dest_floor3, int dest_floor4){ 
+	int returnthing = 0;
+	// for (int i = 0; i < 3; ++i){
+	// 	dest.push_back(6);
+	// }
+	//First four bits, [3:0]
+	returnthing += dest_floor2 ;
+	// [24:21]
+	returnthing += dest_floor3 <<4;
+	// [28:25]
+	returnthing += dest_floor4 <<8;
 	
-// Decode fault is 5
-	int temp			= ((message) / 1000) % 10;
-	decoded.up 			= (temp == 6 || temp == 1);
-	decoded.fault 		= (temp > 1);
+	return returnthing;
+}
+
+UINT encode3(int dest_floor5){
+	int returnthing=0;
+	// [33:29]
+	returnthing += dest_floor5;
+	// cout << "FAULT " <<fault;
+	// for (int i = 0; i < dest.size(); i++){
+	// 	returnthing += (UINT) dest[i] * 10000 * pow(10, i);
+	// }
+
+	return returnthing;	
+}
+// Decoder using bitwise decoding because max UINT mailbox support is 32000, so we can't do one hot
+// Max bit size is 14, FOURTEEEEEEEEN REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE go2sleeeeeeeeeeeep, 
+
+thedata decode(UINT message, UINT message2, UINT message3){
+	thedata decoded;
+	decoded.dest_floor  = (message & 0b1111) ;
+	decoded.curr_floor 	= (message & (0b1111<<4)) >> 4;
+	decoded.idle 		= (message & (1 << 9)) >> 9;
+	decoded.closed		= (message & (1 << 10)) >> 10;
+	decoded.up 			= (message & (1 << 11)) >> 12;
+	decoded.fault 		= (message & (1 << 12)) >> 12;
+	decoded.passengers  = (message & (0b1111 << 13)) >> 13;
+
+	// Message 2
+	decoded.dest_floor2  = (message2 & 0b1111 );
+	decoded.dest_floor3  = (message2 & (0b1111 << 4)) >> 4;
+	decoded.dest_floor4  = (message2 & (0b1111 << 8)) >> 8;
+
+	// Message 3
+	decoded.dest_floor5  = (message3 & 0b1111);
 	// cout << "decode fault: " << decoded.fault;
 	return decoded;
 }

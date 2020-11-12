@@ -18,11 +18,14 @@ int main()
 
 	// cout << "Hello from elevator2 process !!!!!!" << endl;
 	CSemaphore completion("done", 0, 1);
+	CSemaphore command("e2", 0, 1);
 
 	elevator e1("ee2");
 
 	CMailbox mailbox;
 	UINT message = 0;
+	UINT message2 = 0;
+	UINT message3 = 0;
 	thedata decoded;
 	bool old = false;
 	//vector<int> destinations;
@@ -33,13 +36,17 @@ int main()
 		if (mailbox.TestForMessage()) {
 			// Updates status 
 			message = mailbox.GetMessage();
-			char messages[] = {message};
-			int asf = atoi(messages);
+			command.Wait();
+			message2 = mailbox.GetMessage();
+			message3 = mailbox.GetMessage();
+
 			console.Wait();
 			MOVE_CURSOR(0, 4);
-			printf("%u", message);
+			printf("%u ", message);
+			printf("%u ", message2);
+			printf("%u", message3);
 			console.Signal();
-			decoded = decode(message);
+			decoded = decode(message, message2, message3);
 		}
 		else if (decoded.fault){
 			// Clear all requests
