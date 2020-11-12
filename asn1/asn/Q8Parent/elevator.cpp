@@ -47,6 +47,7 @@ void elevator::GetElevatorStatus_dispatcher(thedata *data){
 	data->closed 		= datapool_ptr -> closed;
 	data->idle 			= datapool_ptr -> idle;
 	data->up 			= datapool_ptr -> up;
+	data->fault			= datapool_ptr -> fault;
 	// Data unlock
 	theMutex->Signal();
 	// Consumer unlock
@@ -72,6 +73,8 @@ void elevator::GetElevatorStatus_io(thedata *data){
 	data->closed 		= datapool_ptr -> closed;
 	data->idle 			= datapool_ptr -> idle;
 	data->up 			= datapool_ptr -> up;
+	data->fault			= datapool_ptr -> fault;
+	
 	// Data unlock
 	theMutex->Signal();
 	// Consumer unlock
@@ -106,6 +109,7 @@ void elevator::Update_Status(thedata *data){
 	datapool_ptr->idle 			= data->idle;
 	datapool_ptr->closed 		= data->closed;
 	datapool_ptr->up 			= data->up;
+	datapool_ptr->fault			= data->fault;
 
 	theMutex->Signal();
 			
@@ -115,18 +119,19 @@ void elevator::Update_Status(thedata *data){
 }
 
 // Unneeded.
-void elevator::GetElevatorStatus(thedata &data){
+// void elevator::GetElevatorStatus(thedata &data){
 
-	theMutex->Wait();
+// 	theMutex->Wait();
 
-	data.curr_floor		= datapool_ptr->curr_floor;
-	data.dest_floor 	= datapool_ptr->dest_floor;
-	data.idle 			= datapool_ptr->idle;
-	data.closed 		= datapool_ptr->closed;
-	data.up 			= datapool_ptr->up;
+// 	data.curr_floor		= datapool_ptr->curr_floor;
+// 	data.dest_floor 	= datapool_ptr->dest_floor;
+// 	data.idle 			= datapool_ptr->idle;
+// 	data.closed 		= datapool_ptr->closed;
+// 	data.up 			= datapool_ptr->up;
+// 	data.fault			= datapool_
 
-	theMutex->Signal();
-}
+// 	theMutex->Signal();
+// }
 
 /*
 create vector leave dest as it was
@@ -150,6 +155,7 @@ UINT encode(int curr, int dest, bool idle, bool closed, bool up, bool fault){
 	returnthing += closed ? 1000 : 0;
 	returnthing += up ? 10000 : 0;
 	returnthing += fault ? 5000 : 0;
+	// cout << "FAULT " <<fault;
 	// for (int i = 0; i < dest.size(); i++){
 	// 	returnthing += (UINT) dest[i] * 10000 * pow(10, i);
 	// }
@@ -168,7 +174,7 @@ thedata decode(UINT message){
 	int temp			= ((message) / 1000) % 10;
 	decoded.up 			= (temp == 6 || temp == 1);
 	decoded.fault 		= (temp > 1);
-
+	// cout << "decode fault: " << decoded.fault;
 	return decoded;
 }
 

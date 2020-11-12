@@ -12,13 +12,13 @@ struct io_dispatcher_pipeline {
 	char second;
 };
 
-CRendezvous r1("Rendezvous",2);
+CRendezvous r1("Rendezvous",4);
 
 void e1display();
 void e2display();
 void input();
 void setscene();
-void anielevator(int elev,int curr_floor, bool closed, bool fault);
+void anielevator(int elev,int curr_floor, bool closed, bool fault,int prev);
 
 /*
 Deals with all things displayed on console.
@@ -31,18 +31,18 @@ Get_elevator_status to show current status and animations
 int main()
 {
 	r1.Wait();
-	cout << "Hello from io process !!!!!!" << endl;
+	// cout << "Hello from io process !!!!!!" << endl;
 	setscene();
 	thedata elevator1data;
 	thedata elevator2data;
 	// Creating three threads: updates from elevator1 / 2 + screen redraw, input of commands
 	thread t1(e1display);
-	// thread t2(e2display);
+	thread t2(e2display);
 	thread t3(input);
 
 	// Wait for threads to finish.
 	t1.join();
-	// t2.join();
+	t2.join();
 	t3.join();
 	console.Wait();
 	MOVE_CURSOR(0,11);
@@ -62,9 +62,10 @@ void e1display(){
 	console.Wait();
 	MOVE_CURSOR(50, 0);
 	cout << "ELEVATOR 1 STATUS";
-	MOVE_CURSOR(50, 8);
+	MOVE_CURSOR(50, 13);
 	cout << "ELEVATOR 2 STATUS";
 	console.Signal();
+	int prev = 0;
 
 	while(completion.Read() != 1){
 		elev1.GetElevatorStatus_io(&data);
@@ -90,15 +91,19 @@ void e1display(){
 			cout << "Going down";
 		MOVE_CURSOR(50, 7);             	// move cursor to cords [x,y] 
 		if (data.fault)
-			cout << "FAULT  ";
+			for (int i =2; i < 8; i++){
+				MOVE_CURSOR(50, i);
+				cout << "FAULT            ";
+			}
 		else 
 			cout << "no fault";
 		cout.flush();
 		//fflush(stdout);		      	// force output to be written to screen now
 		// Move back to where input is
-		anielevator (1,data.curr_floor,data.closed,data.fault);
+		anielevator (1,data.curr_floor,data.closed,data.fault, prev);
 		//MOVE_CURSOR(18,5);
 		console.Signal();
+		prev = data.curr_floor;
 	Sleep(100);
 	}
 
@@ -108,6 +113,7 @@ void e1display(){
 // Attempts to get status of elevator. may be blocked if no new data
 void e2display(){
 	CSemaphore completion("done", 0, 1);
+	int prev = 0;
 
 	elevator elev1("ee2");
 	thedata data;
@@ -115,30 +121,40 @@ void e2display(){
 	while(completion.Read() != 1){
 		elev1.GetElevatorStatus_io(&data);
 		console.Wait();
-		MOVE_CURSOR(50, 9);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 15);             	// move cursor to cords [x,y] 
 		cout << "Current floor: " << data.curr_floor;
-		MOVE_CURSOR(50, 10);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 16);             	// move cursor to cords [x,y] 
 		cout << "Dest floor: " << data.dest_floor;
-		MOVE_CURSOR(50, 11);             	// move cursor to cords [x,y] 
-		if (data.idle)
+		MOVE_CURSOR(50, 17);             	// move cursor to cords [x,y] 
+		if (!data.idle)
 			cout << "Idle    ";
 		else
 			cout << "Not idle";
-		MOVE_CURSOR(50, 12);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 18);             	// move cursor to cords [x,y] 
 		if (data.closed)
 			cout << "Doors Closed";
 		else
 			cout << "Doors Open  ";
-		MOVE_CURSOR(50, 13);             	// move cursor to cords [x,y] 
+		MOVE_CURSOR(50, 19);             	// move cursor to cords [x,y] 
 		if (data.up)
 			cout << "Going up  ";
 		else 
 			cout << "Going down";
+		MOVE_CURSOR(50, 20);             	// move cursor to cords [x,y] 
+		if (data.fault)
+			for (int i = 15; i < 21; i++){
+				MOVE_CURSOR(50, i);
+				cout << "FAULT            ";
+			}
+		else 
+			cout << "no fault";
 		cout.flush();
 		//fflush(stdout);		      	// force output to be written to screen now
 		// Move back to where input is
+		anielevator (2,data.curr_floor,data.closed,data.fault, prev);
 		//MOVE_CURSOR(18,5);
 		console.Signal();
+		prev = data.curr_floor;
 	Sleep(100);
 	}
 
@@ -301,12 +317,23 @@ void setscene() {
 	return;
 }
 
-void anielevator(int elev,int curr_floor, bool closed, bool fault){
-	int topleftx = 80+(elev*4);
-	int toplefty = 54-(4*curr_floor);
+void anielevator(int elev,int curr_floor, bool closed, bool fault, int prev){
+	int topleftx = 84+((elev-1 )*13);
+	int toplefty = 54-(5*curr_floor);
+	int toplefty_prev = 54 - (5 * prev);
 	console.Wait();
-	MOVE_CURSOR(topleftx,toplefty);
+
+	MOVE_CURSOR(topleftx, toplefty_prev);
+	cout <<"         ";
+	MOVE_CURSOR(topleftx,toplefty_prev+1);
+	cout <<"         ";
+	MOVE_CURSOR(topleftx,toplefty_prev+2);
+	cout <<"         ";
+   	MOVE_CURSOR(topleftx,toplefty_prev+3);
+	cout <<"         ";
+	
 	if (closed){
+		MOVE_CURSOR(topleftx,toplefty);
 		cout <<"--------";
 		MOVE_CURSOR(topleftx,toplefty+1);
 		cout <<"|  ||  |";
@@ -315,7 +342,8 @@ void anielevator(int elev,int curr_floor, bool closed, bool fault){
    		MOVE_CURSOR(topleftx,toplefty+3);
 	    cout <<"--------";
 	}
-	else if (~closed){
+	else if (!closed){
+		MOVE_CURSOR(topleftx,toplefty);
 		cout <<"--------";
 		MOVE_CURSOR(topleftx,toplefty+1);
 		cout <<"||    ||";
@@ -324,7 +352,8 @@ void anielevator(int elev,int curr_floor, bool closed, bool fault){
    		MOVE_CURSOR(topleftx,toplefty+3);
 	    cout <<"--------";
 	}
-	else {
+	if(fault) {
+		MOVE_CURSOR(topleftx,toplefty);
 		cout <<"--------";
 		MOVE_CURSOR(topleftx,toplefty+1);
 		cout <<"|  \\/  |";
@@ -333,6 +362,7 @@ void anielevator(int elev,int curr_floor, bool closed, bool fault){
    		MOVE_CURSOR(topleftx,toplefty+3);
 	    cout <<"--------";
 	}
+	
 	console.Signal();
 	return;
 }

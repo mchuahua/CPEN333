@@ -17,7 +17,7 @@ void e1(thedata *elevator1data);
 void e2(thedata *elevator2data);
 void algo(thedata *elevator1data, thedata *elevator2data, CProcess *elevator1_process, CProcess *elevator2_process);
 
-CRendezvous r1("Rendezvous",2);
+CRendezvous r1("Rendezvous",4);
 
 elevator elev1("ee1");
 elevator elev2("ee2");
@@ -51,19 +51,19 @@ int main(void) {
 // 	}
 	// Create 3 threads
 	thread t1(e1, &elevator1data); 
-	//thread t2(e2, &elevator2data);
+	thread t2(e2, &elevator2data);
 	thread t3(algo, &elevator1data, &elevator2data, &elevator1_process, &elevator2_process);
 
 
 
 	// Wait for threads to finish
 	t1.join();
-	//t2.join();
+	t2.join();
 	t3.join();
 	
 	// Waiting for processes to terminate
-	// elevator1_process.WaitForProcess();
-	//elevator1_process.WaitForProcess();
+	elevator1_process.WaitForProcess();
+	elevator2_process.WaitForProcess();
 	io_process.WaitForProcess();
 	console.Wait();
 	MOVE_CURSOR(0,12);
@@ -194,6 +194,9 @@ Dispatcher algo pops queue depending on idle elevators and checks above.
 			// Elevator 2, do nohting for now
 			else if (temp.first == '2'){
 				// elev2.set_dest(temp.second);
+				int asfd = temp.second - '0';
+				elevator2_process->Post(encode(elevator2data->curr_floor, asfd, false, true, ((asfd - elevator2data->curr_floor)>0? true: false), elevator2data->fault));
+			
 			}
 		}
 		else if (regex_search(s, outside)){// - outisde u or d, 0-9 {[u|d][0-9]}
@@ -218,7 +221,17 @@ Dispatcher algo pops queue depending on idle elevators and checks above.
 				}
 				if (temp.first == '+'){
 					// Stop elevator 1 and clear destinations.
-					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->dest_floor, elevator1data->idle, elevator1data->closed, elevator1data->up, false));
+					elevator1_process->Post(encode(elevator1data->curr_floor, elevator1data->curr_floor, elevator1data->idle, elevator1data->closed, elevator1data->up, false));
+				}
+			}
+			else if (temp.second == '2'){
+				if (temp.first == '-'){
+					// Stop elevator 2 and clear destinations.
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->dest_floor, elevator2data->idle, elevator2data->closed, elevator2data->up, true));
+				}
+				if (temp.first == '+'){
+					// Stop elevator 2 and clear destinations.
+					elevator2_process->Post(encode(elevator2data->curr_floor, elevator2data->curr_floor, elevator2data->idle, elevator2data->closed, elevator2data->up, false));
 				}
 			}
 			
