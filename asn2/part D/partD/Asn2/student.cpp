@@ -1,25 +1,37 @@
 #include "student.h"
+#include "website.h"
+// Initalized by main
+student::student(string name_, int id_, int year_, int comp_, int avg_){
+    name = name_;
+    avg = avg_;
+    id = id_;
+    year = year_;
+    year_completion = comp_;
 
-student::student(){
-
+    cout << "~~~~~~~~~Initializing student~~~~~~~~~~" << endl;
+    cout << "Student name is " << name << endl;
+    cout << "Student avg is " << avg << endl;
+    cout << "Student id is " << id << endl;
+    cout << "Student year is " << year << endl;
+    cout << "Student year completed " << year_completion << endl;
+    cout << "~~~~~~Done initializing student~~~~~~~~" << endl;
 }
 
 student::~student(){
-    
+    delete theWebsite;
 }
 
+// Called by main
 void student::ViewForm() {
-    cout << "Viewing form: ";
-    for (int i = 0; i < 3; i++){
-        cout << form[i] << " ";
-    }
-    cout << endl;
+    theWebsite->viewForm(this);
 }
 
-void student::EditForm(int arr[3]) {
-    theWebsite->UpdateForm(this, arr);
+// Called by main
+void student::EditForm(int arr[2]) {
+    theWebsite->updateForm(this, arr);
 }
 
-void student::ReqGrad() {
-
-}
+// Called by main
+//void student::ReqGrad() {
+//    theWebsite->getGradReq(this);
+//}
