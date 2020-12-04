@@ -3,18 +3,21 @@
 #define __professor__
 
 #include <string>
+#include "student.h"
 using namespace std;
+
 class website;
 
 class professor
 {
     string name;
+    string coursename;
+    
 public:
     website* theWebsite;
-
-    professor();
+    professor(string name, string coursename);
     ~professor();
-
+    void courseGradeToZero(student* name);
 
 };
 

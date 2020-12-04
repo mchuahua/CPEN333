@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
+#include "student.h"
 
 using namespace std;
+
 class website;
 
 class dean
@@ -9,8 +11,10 @@ class dean
     string name;
 public:
     website *theWebsite;
+    string recordbook;
 
-    dean();
+    dean(string name);
     ~dean();
+    void UpdateRecords(student* guy, int decision);
 };
 

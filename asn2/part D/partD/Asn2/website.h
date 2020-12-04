@@ -34,13 +34,19 @@ public:
     void updateForm(student *guy,int arr[2]);
     student* getNextForm(int studentnum);
     void updatePlacement(student* guy, string program);
-    //void getGradReq(student* guy);
+    student* getNextPromo(int studentnum);
+    student* viewNextIncident(int studentnum);
+    student* getNextStudentForGraduation(int studentnum);
+    void DoGradReq(student* guy);
+    void notifyProfessor(student* guy);
+    void notifyDean(student* guy , int decision);
+    void updateGrade(student* guy, int grade);
     
-    void getIncident();
-    void decisionOutcome();
-    void display();
+    //void getIncident();
+    //void decisionOutcome();
+    //void display();
     
-    //Add things
+    //Add pointer links
     void AddStudent(student* asdf) { theStudent = asdf; asdf->theWebsite = this; };
     void AddStudent2(student* asdf) { theStudent2 = asdf; asdf->theWebsite = this; };
     void AddPresident(president* asdf) { thePresident = asdf; thePresident->theWebsite = this; };

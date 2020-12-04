@@ -16,11 +16,10 @@ public:
     website *theWebsite;
 
 
-    president();
+    president(string name);
     ~president();
-
-   
-
+    void processIncidents();
 };
+
 
 #endif

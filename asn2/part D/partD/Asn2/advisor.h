@@ -17,11 +17,9 @@ public:
     advisor(string asdf);
     ~advisor();
 
-    bool ProcessGrad();
-    int ProcessPromo();
+    void ProcessGrad();
+    void ProcessPromo();
     void ProcessPlacement();
-
-
 };
 
 

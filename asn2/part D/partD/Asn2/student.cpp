@@ -1,13 +1,17 @@
 #include "student.h"
 #include "website.h"
+
 // Initalized by main
-student::student(string name_, int id_, int year_, int comp_, int avg_){
+student::student(string name_, int id_, int year_, int comp_, int avg_ , bool outfees){
+// Copying
     name = name_;
     avg = avg_;
     id = id_;
     year = year_;
     year_completion = comp_;
+    outstanding_fees = outfees;
 
+// Printiing to console
     cout << "~~~~~~~~~Initializing student~~~~~~~~~~" << endl;
     cout << "Student name is " << name << endl;
     cout << "Student avg is " << avg << endl;
@@ -17,6 +21,7 @@ student::student(string name_, int id_, int year_, int comp_, int avg_){
     cout << "~~~~~~Done initializing student~~~~~~~~" << endl;
 }
 
+// We gota delete the website.
 student::~student(){
     delete theWebsite;
 }
@@ -32,6 +37,6 @@ void student::EditForm(int arr[2]) {
 }
 
 // Called by main
-//void student::ReqGrad() {
-//    theWebsite->getGradReq(this);
-//}
+void student::ReqGrad() {
+    theWebsite->DoGradReq(this);
+}

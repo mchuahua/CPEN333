@@ -12,12 +12,52 @@ advisor::~advisor(){
     delete theWebsite;
 }
 
-bool advisor::ProcessGrad(){
-    return 0;
+void advisor::ProcessGrad(){
+    for (int i = 0; i < 2; i++) {
+        student* temp = theWebsite->getNextStudentForGraduation(i);
+        if (temp == NULL){
+            cout << "Advisor sees no more students for processing grad." << endl;
+            return;
+        }
+        // Algo. Basically promote if completion > 80. Otherwise hell naw
+        if (temp->grad_req && !temp->outstanding_fees && temp->complimentary_course_comp){
+            cout << "Nice. Graduated student " << temp->name << endl;
+        }
+        else if (temp->outstanding_fees || !temp->complimentary_course_comp){
+            if (temp->outstanding_fees) {
+                cout << "lol u thought u could get away from paying fees..." << temp->name << endl;
+                temp->grad_req = false;
+            }
+            else{
+                cout << "lol u thought u could get away from doing apsc 450..." << temp->name << endl;
+                temp->grad_req = false;
+            }
+        }
+        else {
+            cout << "Student " << temp->name << " is not eligible for grad! You need to suffer more!" << endl;
+        }
+    }
+    cout << "Advisor is done processing graduation for students." << endl;
 }
 
-int advisor::ProcessPromo(){
-    return 0;
+void advisor::ProcessPromo(){
+    // Get next student info 
+    for (int i = 0; i < 2; i++) {
+        student* temp = theWebsite->getNextPromo(i);
+        if (temp == NULL){
+            cout << "Advisor sees no more students for processing promo." << endl;
+            return;
+        }
+        // Algo. Basically promote if completion > 80. Otherwise hell naw
+        if (temp->year_completion < 0){
+            cout << "Wait what, how is there a negative course completed" << endl;
+        }
+        else if (temp->year_completion > 80){
+            temp->year++;
+            cout << "Student year updated to " << temp->year << endl;
+        }
+    }
+    cout << "Advisor is done processing promos." << endl;
 }
 
 // Advisor chooses 
