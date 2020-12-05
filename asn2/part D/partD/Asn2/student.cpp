@@ -11,7 +11,7 @@ student::student(string name_, int id_, int year_, int comp_, int avg_ , bool ou
     year_completion = comp_;
     outstanding_fees = outfees;
 
-// Printiing to console
+// Printing to console
     cout << "~~~~~~~~~Initializing student~~~~~~~~~~" << endl;
     cout << "Student name is " << name << endl;
     cout << "Student avg is " << avg << endl;
@@ -21,22 +21,22 @@ student::student(string name_, int id_, int year_, int comp_, int avg_ , bool ou
     cout << "~~~~~~Done initializing student~~~~~~~~" << endl;
 }
 
-// We gota delete the website.
+// We gotta delete the website.
 student::~student(){
     delete theWebsite;
 }
 
-// Called by main
+// Called by main.
 void student::ViewForm() {
     theWebsite->viewForm(this);
 }
 
-// Called by main
+// Called by main.
 void student::EditForm(int arr[2]) {
     theWebsite->updateForm(this, arr);
 }
 
-// Called by main
+// Called by main.
 void student::ReqGrad() {
     theWebsite->DoGradReq(this);
 }

@@ -1,11 +1,12 @@
 #include "website.h"
 
-
+// Constructor. Hardcoded to name the website SSC. 
 website::website(){
 	name = "SSC";
 	cout << name << " website initiated." << endl;
 }
 
+// Destructor. Deletes the pointers which are dynamically allocated.
 website::~website(){
     delete theStudent;
     delete thePresident;
@@ -37,6 +38,7 @@ void website::viewForm(student* guy){
         cout << guy->form[i] << " ";
     }
     cout << endl;
+	formviewed_test++;
 }
 
 // Called by advisor 
@@ -101,11 +103,12 @@ student* website::getNextStudentForGraduation(int studentnum) {
 	return NULL;
 }
 
+// Called by student.
 void website::DoGradReq(student* guy) {
 	guy->grad_req = true;
 }
 
-
+// Called by President's Office.
 student* website::viewNextIncident(int studentnum){
 	if (studentnum == 0){
 		cout << "Next incident consideration is for student 1" << endl;
@@ -122,14 +125,17 @@ student* website::viewNextIncident(int studentnum){
 	return NULL;
 }
 
+// Called by President's office
 void website::notifyProfessor(student* guy){
 	theProfessor->courseGradeToZero(guy);
 }
 
+// Called by President's office
 void website::notifyDean(student* name, int decision){
 	theDean->UpdateRecords(name, decision);
 }
 
+// Called by professor
 void website::updateGrade(student* guy, int grade){
 	guy->course_grade = grade;
 }

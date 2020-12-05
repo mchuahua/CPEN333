@@ -14,9 +14,9 @@ using namespace std;
 
 class website
 {
-    string name;
 
 public:
+    string name;
 
     // Pointers
     student* theStudent;
@@ -26,6 +26,7 @@ public:
     professor* theProfessor;
     dean* theDean;
     int studentnum = 2;
+    int formviewed_test = 0;
     
     // Constructors and descructers
     website();
@@ -42,9 +43,6 @@ public:
     void notifyDean(student* guy , int decision);
     void updateGrade(student* guy, int grade);
     
-    //void getIncident();
-    //void decisionOutcome();
-    //void display();
     
     //Add pointer links
     void AddStudent(student* asdf) { theStudent = asdf; asdf->theWebsite = this; };

@@ -4,17 +4,14 @@
 #include <string>
 
 using namespace std;
+// Forward declaration to prevent circular instantiation, which happens even with the #pragmaonce and #ifndef definitions.
 class website;
 
 class president
 {
-    string name;
-
-
 public:
-
+    string name;
     website *theWebsite;
-
 
     president(string name);
     ~president();

@@ -4,6 +4,7 @@
 
 using namespace std;
 
+// Forward declaration to prevent circular instantiation, which happens even with the #pragmaonce and #ifndef definitions.
 class website;
 
 class dean

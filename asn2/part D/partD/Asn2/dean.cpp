@@ -2,14 +2,17 @@
 #include "website.h"
 #include <iostream>
 
+// Constructor
 dean::dean(string name1){
     name = name1;
 }
 
+// Gotta delete dynamically allocated pointer
 dean::~dean(){
     delete theWebsite;
 }
 
+// Called by website.
 void dean::UpdateRecords(student* guy, int decision) {
     string outcome;
     if (decision == 1) {
@@ -22,7 +25,7 @@ void dean::UpdateRecords(student* guy, int decision) {
         outcome = "Expelled";
     }
 
-    string note = guy->name + " with id# " + to_string(guy->id) + outcome +"\n";
+    string note = guy->name + " with id#" + to_string(guy->id) +" "+ outcome +"\n";
     cout << "Dean updated record with: " << note;
     recordbook += note;
 }

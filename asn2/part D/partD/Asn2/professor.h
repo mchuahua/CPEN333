@@ -6,6 +6,7 @@
 #include "student.h"
 using namespace std;
 
+// Forward declaration to prevent circular instantiation, which happens even with the #pragmaonce and #ifndef definitions.
 class website;
 
 class professor
@@ -20,8 +21,6 @@ public:
     void courseGradeToZero(student* name);
 
 };
-
-
 
 #endif // !__professor__
 

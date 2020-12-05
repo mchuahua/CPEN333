@@ -5,6 +5,7 @@
 #include <iostream>
 using namespace std;
 
+// Forward declaration to prevent circular instantiation, which happens even with the #pragmaonce and #ifndef definitions.
 class website;
 
 class student
@@ -19,7 +20,6 @@ public:
     int avg;
     int year;
     int year_completion;
-    bool graduation_eligible = false;
     bool grad_req = false;
     bool outstanding_fees;
     int cheating_incidents = 0;
