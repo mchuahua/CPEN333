@@ -117,6 +117,31 @@ namespace UnitTesting
 			Assert::AreEqual(test_student->program, elec);
 			Assert::AreNotEqual(test_student->program, fizz);
 		}
+		// This test should fail due to incorrect data
+		TEST_METHOD(Failing_Test){
+			string name = "test";
+			string elec = "ELEC";
+			string fizz = "FIZZ";
+			website* test_website = new website();
+			student* test_student = new student(name, 0, 1, 80, 90, false);
+			advisor* test_advisor = new advisor(name);
+			test_website->AddStudent(test_student);
+			test_website->AddAdvisor(test_advisor);
+		    int test_form[2] = { 1, 2 };
+			test_student->ViewForm();
+			test_student->EditForm(test_form);
+			test_student->ViewForm();
+			test_advisor->ProcessPlacement();
+			Assert::AreEqual(test_student->program, fizz);
+			Assert::AreNotEqual(test_student->program, elec);
+		}
+		TEST_METHOD(Failing_Test2)
+		{
+			string name = "testname";
+			student* test = new student(name, 12, 1, 1, 1, true);
+			test->~student();
+			Assert::IsNotNull(test->theWebsite);
+		}
 	};
     
 }
